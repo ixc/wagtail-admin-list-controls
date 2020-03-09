@@ -90,24 +90,23 @@ class TestModelAdmin(ModelAdmin):
 
 ## Screenshots
 
-### Collapsible "Advanced Search" and "Order Results" panels with buttons to change layouts. 
-
 ![](./docs/screenshots/image_list_view_default.png)
 
+Collapsible "Advanced Search" and "Order Results" panels with buttons to change layouts. A textual description 
+of the search & ordering controls is provided to improve UX.
 
-### "Advanced Search" panel collapsed and displaying a powerful search interface. 
+------------------------------------------------------
 
 ![](./docs/screenshots/image_list_view_filters.png)
 
+The "Advanced Search" panel collapsed and displaying an extended search interface.
 
-### "Order Results" panel collapsed and displaying multiple options to control ordering of the results. 
+------------------------------------------------------ 
 
 ![](./docs/screenshots/image_list_view_ordering.png)
 
+The "Order Results" panel collapsed and displaying options to control ordering of the results.
 
-### A textual description of the search & ordering controls is provided to improve UX.
-
-![](./docs/screenshots/image_list_view_textual_description.png)
 
 
 ## Rationale and goals
