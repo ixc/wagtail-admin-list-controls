@@ -127,3 +127,10 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+
+# Front-end build artifacts
+admin_list_controls/webpack_manifest.json
+admin_list_controls/static/admin_list_controls/dist
+
+node_modules
+db.sqlite3

@@ -1,0 +1,4 @@
+django>=2.2,<2.3
+wagtail>=2.8,<2.9
+ipdb>=0.13,<0.14
+django-webtest>=1.9.7,<1.10
