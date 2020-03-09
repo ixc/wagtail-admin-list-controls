@@ -15,9 +15,9 @@ Adds advanced search, ordering and layout controls to wagtail's modeladmin list 
 
 ## Installation
 
-```
-pip install wagtail-admin-list-controls
-```
+Note that this project will be published to PyPI sometime soon, we're currently evaluating some changes to improve usability.
+
+If you'd like to use it right now, your best best would be to clone the repo.
 
 
 ## Basic usage
