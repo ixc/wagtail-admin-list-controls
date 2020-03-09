@@ -22,7 +22,7 @@ pip install wagtail-admin-list-controls
 
 ## Basic usage
 
-The code below will wire up an extended list view for `MyModel` instances. The view will a string filter and
+The code below will wire up an extended list view for `MyModel` instances. The view will add a string filter and
 sorting option.
 
 ```python
@@ -95,12 +95,12 @@ class TestModelAdmin(ModelAdmin):
 ![](./docs/screenshots/image_list_view_default.png)
 
 
-### "Advanced Search" panel collapsed and displaying a powerful search interface. 
+### "Advanced Search" panel expanded and displaying a powerful search interface. 
 
 ![](./docs/screenshots/image_list_view_filters.png)
 
 
-### "Order Results" panel collapsed and displaying multiple options to control ordering of the results. 
+### "Order Results" panel expanded and displaying multiple options to control ordering of the results. 
 
 ![](./docs/screenshots/image_list_view_ordering.png)
 
