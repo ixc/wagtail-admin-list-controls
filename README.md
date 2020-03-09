@@ -23,7 +23,7 @@ pip install wagtail-admin-list-controls
 ## Basic usage
 
 The code below will wire up an extended list view for `MyModel` instances. The view will a string filter and
-sorting option. For more exhaustive examples, see the documentation.
+sorting option.
 
 ```python
 # wagtail_hooks.py
