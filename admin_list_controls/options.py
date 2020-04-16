@@ -1,17 +1,5 @@
-STRING_FILTER = 'string'
-CHOICE_FILTER = 'choice'
-BOOLEAN_FILTER = 'boolean'
-RADIO_FILTER = 'radio'
-
 HALF_WIDTH_FILTER = 'half_width'
 FULL_WIDTH_FILTER = 'full_width'
-
-VALID_FILTERS = (
-    STRING_FILTER,
-    CHOICE_FILTER,
-    BOOLEAN_FILTER,
-    RADIO_FILTER,
-)
 
 VALID_FILTER_WIDTHS = (
     HALF_WIDTH_FILTER,
@@ -22,114 +10,188 @@ SORT_PARAM = 'sort'
 LAYOUT_PARAM = 'layout'
 
 
-# These constructors are using pascal case to masquerade as classes, but they're simply
-# generating dictionaries that declare the desired structure for the UI. This helps to
-# reduce verbosity when declaring options, while also providing an API that'll allow us
-# to add more features/validation/etc.
+class BaseListControl:
+    object_type = ''
+
+    def __init__(self, children=None, *args, **kwargs):
+        assert self.object_type
+        if children:
+            self.children = children
+        else:
+            self.children = []
+
+    def serialize(self):
+        return {
+            'object_type': self.object_type,
+            'children': [
+                child.serialize() for child in self.children
+            ]
+        }
+
+    def traverse(self):
+        yield self
+        for child in self.children:
+            yield child.traverse()
 
 
-def ListViewOptions(filters=None, sorts=None, layouts=None):
-    assert isinstance(filters, (dict, type(None)))
-    assert isinstance(sorts, (dict, type(None)))
-    assert isinstance(layouts, (dict, type(None)))
-
-    return {
-        'filters': filters,
-        'sorts': sorts,
-        'layouts': layouts,
-    }
+class ListViewControls(BaseListControl):
+    object_type = 'list_view_controls'
 
 
-def FilterOptions(children):
-    assert isinstance(children, list)
-
-    return {
-        'object_type': 'filter_options',
-        'children': children,
-    }
+class FilterPanel(BaseListControl):
+    object_type = 'filter_panel'
 
 
-def FilterGroup(title, children):
-    assert isinstance(title, str)
-    assert isinstance(children, list)
-    for obj in children:
-        assert isinstance(obj, dict)
+class FilterGroup(BaseListControl):
+    object_type = 'filter_group'
 
-    return {
-        'object_type': 'filter_group',
-        'title': title,
-        'children': children,
-    }
+    def __init__(self, title, *args, **kwargs):
+        super().__init__(*args, **kwargs)
 
+        self.title = title
 
-def Filter(
-    name, label, type, value, results_description, choices=None, multiple=None, clearable=None,
-    width=None, is_default=None,
-):
-    if width is None:
-        width = HALF_WIDTH_FILTER
-
-    assert type in VALID_FILTERS
-    assert width in VALID_FILTER_WIDTHS
-
-    return {
-        'object_type': 'filter',
-        'name': name,
-        'label': label,
-        'type': type,
-        'value': value,
-        'results_description': results_description,
-        'choices': choices,
-        'multiple': multiple,
-        'clearable': clearable,
-        'width': width,
-        'is_default': is_default,
-    }
+    def serialize(self):
+        serialized = super().serialize()
+        serialized.update({
+            'title': self.title,
+        })
+        return serialized
 
 
-def SortOptions(children):
-    assert isinstance(children, list)
+class BaseFilter(BaseListControl):
+    object_type = 'filter'
+    filter_type = ''
 
-    return {
-        'object_type': 'sort_options',
-        'children': children,
-    }
+    def __init__(self, name, label, value, results_description, is_default=None, width=None, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        assert self.filter_type
+        self.name = name
+        self.label = label
+        self.value = value
+        self.results_description = results_description
+        self.is_default = is_default
+        if width:
+            assert width in VALID_FILTER_WIDTHS
+            self.width = width
+        else:
+            self.width = HALF_WIDTH_FILTER
+
+    def serialize(self):
+        serialized = super().serialize()
+        serialized.update({
+            'type': self.type,
+            'name': self.name,
+            'label': self.label,
+            'value': self.value,
+            'results_description': self.results_description,
+            'is_default': self.is_default,
+            'width': self.width,
+        })
+        return serialized
 
 
-def Sort(label, value, is_selected, results_description, name=None, is_default=None):
-    if name is None:
-        name = SORT_PARAM
-
-    return {
-        'object_type': 'sort',
-        'name': name,
-        'label': label,
-        'value': value,
-        'is_selected': is_selected,
-        'results_description': results_description,
-        'is_default': is_default,
-    }
+class StringFilter(BaseFilter):
+    filter_type = 'string'
 
 
-def LayoutOptions(children):
-    assert isinstance(children, list)
-
-    return {
-        'object_type': 'layout_options',
-        'children': children,
-    }
+class BooleanFilter(BaseFilter):
+    filter_type = 'boolean'
 
 
-def Layout(label, value, is_selected, icon_class, template=None, name=None):
-    if name is None:
-        name = LAYOUT_PARAM
+class RadioFilter(BaseFilter):
+    filter_type = 'radio'
 
-    return {
-        'object_type': 'layout',
-        'name': name,
-        'label': label,
-        'value': value,
-        'is_selected': is_selected,
-        'icon_class': icon_class,
-        'template': template,
-    }
+    def __init__(self, choices, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.choices = choices
+
+    def serialize(self):
+        serialized = super().serialize()
+        serialized.update({
+            'choices': self.choices,
+        })
+        return serialized
+
+
+class ChoiceFilter(BaseFilter):
+    filter_type = 'choice'
+
+    def __init__(self, choices, multiple=None, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.choices = choices
+        self.multiple = multiple
+
+    def serialize(self):
+        serialized = super().serialize()
+        serialized.update({
+            'choices': self.choices,
+            'multiple': self.multiple,
+        })
+        return serialized
+
+
+class SortPanel(BaseListControl):
+    object_type = 'sort_panel'
+
+
+class Sort(BaseListControl):
+    object_type = 'sort'
+
+    def __init__(self, label, value, is_selected, results_description, name=None, is_default=None, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        self.label = label
+        self.value = value
+        self.is_selected = is_selected
+        self.results_description = results_description
+        if name:
+            self.name = name
+        else:
+            self.name = SORT_PARAM
+        self.is_default = is_default
+
+    def serialize(self):
+        serialized = super().serialize()
+        serialized.update({
+            'label': self.label,
+            'value': self.value,
+            'is_selected': self.is_selected,
+            'results_description': self.results_description,
+            'name': self.name,
+            'is_default': self.is_default,
+        })
+        return serialized
+
+
+class LayoutOptions(BaseListControl):
+    object_type = 'layout_options'
+
+
+class Layout(BaseListControl):
+    object_type = 'layout'
+
+    def __init__(self, label, value, is_selected, icon_class, template=None, name=None, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        self.label = label
+        self.value = value
+        self.is_selected = is_selected
+        self.icon_class = icon_class
+        self.template = template
+        if name:
+            self.name = name
+        else:
+            self.name = LAYOUT_PARAM
+
+    def serialize(self):
+        serialized = super().serialize()
+        serialized.update({
+            'label': self.label,
+            'value': self.value,
+            'is_selected': self.is_selected,
+            'icon_class': self.icon_class,
+            'template': self.template,
+            'name': self.name,
+        })
+        return serialized

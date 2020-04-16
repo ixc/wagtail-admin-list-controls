@@ -1,20 +1,19 @@
 from wagtail.contrib.modeladmin.options import ModelAdmin, modeladmin_register
 from wagtail.contrib.modeladmin import views as modeladmin_views
 from admin_list_controls.views import AdminListControlsMixin
-from admin_list_controls.options import Filter, FilterGroup, FilterOptions, SortOptions, Sort, BOOLEAN_FILTER, \
-    CHOICE_FILTER, STRING_FILTER, SORT_PARAM, LAYOUT_PARAM, Layout, LayoutOptions, ListViewOptions
+from admin_list_controls.options import StringFilter, RadioFilter, ChoiceFilter, BooleanFilter, FilterGroup, \
+    FilterPanel, SortPanel, Sort, Layout, LayoutOptions, ListViewControls
 from .models import TestModel
 
 
 class TestModelAdminIndexView(AdminListControlsMixin, modeladmin_views.IndexView):
-    def build_list_control_options(self):
-        return ListViewOptions(
-            filters=FilterOptions([
-                Filter(
+    def build_list_controls(self):
+        return ListViewControls([
+            FilterPanel([
+                ChoiceFilter(
                     name='test_choice_filter',
                     label="Test choice filter",
                     results_description='test choice filter description',
-                    type=CHOICE_FILTER,
                     choices=(
                         ('test one', 'Test one'),
                         ('test two', 'Test two'),
@@ -22,34 +21,41 @@ class TestModelAdminIndexView(AdminListControlsMixin, modeladmin_views.IndexView
                     multiple=True,
                     value='test one',
                 ),
-                Filter(
+                StringFilter(
                     name='test_string_filter',
                     label="Test string filter",
                     results_description="test string filter description",
-                    type=STRING_FILTER,
                     value='test',
                 ),
-                Filter(
+                BooleanFilter(
                     name='test_boolean_filter',
                     label="Test boolean filter",
                     results_description="test boolean filter description",
-                    type=BOOLEAN_FILTER,
                     value=True,
+                ),
+                RadioFilter(
+                    name='test_radio_filter',
+                    label="Test radio filter",
+                    results_description="test radio filter description",
+                    choices=(
+                        ('test one', 'Test one'),
+                        ('test two', 'Test two'),
+                    ),
+                    value='test one',
                 ),
                 FilterGroup(
                     title='Test filter group',
                     children=[
-                        Filter(
+                        StringFilter(
                             name='test_nested_filter',
                             label="Test nested filter",
                             results_description="test nested filter description",
-                            type=STRING_FILTER,
                             value='test',
                         ),
                     ]
                 ),
             ]),
-            sorts=SortOptions([
+            SortPanel([
                 Sort(
                     label='Test sort',
                     results_description='Test sort description',
@@ -58,7 +64,7 @@ class TestModelAdminIndexView(AdminListControlsMixin, modeladmin_views.IndexView
                     is_default=True,
                 ),
             ]),
-            layouts=LayoutOptions([
+            LayoutOptions([
                 Layout(
                     label='Test layout with template',
                     value='test_layout_with_template',
@@ -72,8 +78,8 @@ class TestModelAdminIndexView(AdminListControlsMixin, modeladmin_views.IndexView
                     is_selected=False,
                     icon_class='icon icon-fa-th-list',
                 ),
-            ]),
-        )
+            ])
+        ])
 
 
 @modeladmin_register

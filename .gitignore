@@ -134,3 +134,4 @@ admin_list_controls/static/admin_list_controls/dist
 
 node_modules
 db.sqlite3
+venv
