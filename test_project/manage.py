@@ -3,6 +3,9 @@
 import os
 import sys
 
+# Ensure `admin_list_controls` is on the PYTHONPATH
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
 
 def main():
     os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'djangosite.settings')

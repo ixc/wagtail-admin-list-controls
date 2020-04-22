@@ -2,23 +2,23 @@ import os
 import json
 from django.conf import settings
 from django.utils.safestring import mark_safe
-from .options import SORT_PARAM, LAYOUT_PARAM, ListViewOptions
+from .controls import ListControls
 from .vendor import webpack_manifest
 
 
-class AdminListControlsMixin:
+class ListControlsIndexViewMixin:
     """
     Adds filtering, sorting and other controls to a modeladmin's list/index view
     """
 
-    _built_list_control_options = None
+    _built_list_controls = None
     _items_per_page = None
 
-    def build_list_control_options(self):
+    def build_list_controls(self):
         """
         A hook provided to declare the filters for the UI
         """
-        return ListViewOptions()
+        return ListControls()
 
     def apply_list_controls_to_queryset(self, queryset):
         """
@@ -27,9 +27,9 @@ class AdminListControlsMixin:
         return queryset
 
     def get_list_controls(self):
-        if not self._built_list_control_options:
-            self._built_list_control_options = self.build_list_control_options()
-        return self._built_list_control_options
+        if not self._built_list_controls:
+            self._built_list_controls = self.build_list_controls()
+        return self._built_list_controls
 
     def get_template_names(self):
         return ['admin_list_controls/admin_list_controls.html']
