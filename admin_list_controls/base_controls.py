@@ -1,14 +1,6 @@
-from admin_list_controls.exceptions import ConfigurationError
-
-
 class BaseControl:
     object_type = ''
-
-    def __init__(self, children=None, *args, **kwargs):
-        if children:
-            self.children = children
-        else:
-            self.children = []
+    children = None
 
     def prepare(self, *args, **kwargs):
         pass
@@ -31,10 +23,12 @@ class BaseControl:
             'children': serialized_children,
         }
 
-    def traverse(self):
-        yield self
-        for child in self.children:
-            yield child.traverse()
+    def flatten_hierarchy(self):
+        hierarchy = [self]
+        if self.children:
+            for child in self.children:
+                hierarchy += child.flatten_hierarchy()
+        return hierarchy
 
 
 class BaseDataControl(BaseControl):
@@ -44,9 +38,6 @@ class BaseDataControl(BaseControl):
         super().__init__(*args, **kwargs)
 
         self.name = name
-        if not self.name:
-            raise ConfigurationError('A `name` must be provided')
-
         self._apply_to_queryset = apply_to_queryset
 
     def prepare(self, request):
@@ -98,10 +89,13 @@ class BaseFilter(BaseDataControl):
     object_type = 'filter'
     filter_type = ''
 
-    def __init__(self, label, width=HALF_WIDTH, *args, **kwargs):
+    def __init__(self, label=None, width=HALF_WIDTH, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
-        self.label = label
+        if label:
+            self.label = label
+        else:
+            self.label = self.name
         self.width = width
 
     def apply_to_queryset(self, queryset):

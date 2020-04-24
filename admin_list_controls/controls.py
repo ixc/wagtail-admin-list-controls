@@ -5,14 +5,20 @@ from .base_controls import BaseControl, BaseFilter, BaseToggle
 class ListControls(BaseControl):
     object_type = 'list_controls'
 
+    def __init__(self, children, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        self.children = children
+
 
 class FilterPanel(BaseControl):
     object_type = 'filter_panel'
     label = _('Filters')
 
-    def __init__(self, label=None, *args, **kwargs):
+    def __init__(self, children, label=None, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
+        self.children = children
         if label:
             self.label = label
 
@@ -25,9 +31,10 @@ class FilterPanel(BaseControl):
 class FilterGroup(BaseControl):
     object_type = 'filter_group'
 
-    def __init__(self, label=None, *args, **kwargs):
+    def __init__(self, children, label=None, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
+        self.children = children
         self.label = label
 
     def serialize(self):
@@ -110,7 +117,7 @@ class SortPanel(BaseControl):
     object_type = 'sort_panel'
     label = _('Order results')
 
-    def __init__(self, label=None, *args, **kwargs):
+    def __init__(self, children, label=None, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
         if label:
@@ -139,6 +146,11 @@ class Sort(BaseToggle):
 
 class LayoutControls(BaseControl):
     object_type = 'layout_controls'
+
+    def __init__(self, children, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        self.children = children
 
 
 class Layout(BaseToggle):

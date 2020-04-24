@@ -19,3 +19,6 @@ class Product(models.Model):
         max_length=1000,
     )
     is_featured = models.BooleanField(default=False)
+
+    def __str__(self):
+        return self.name

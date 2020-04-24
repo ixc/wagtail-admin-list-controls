@@ -263,7 +263,7 @@ class TestControls(WebTest):
 
     def test_list_controls_serialization(self):
         self.assertEqual(
-            ListControls().serialize(),
+            ListControls([]).serialize(),
             {
                 'object_type': 'list_controls',
                 'children': [],
@@ -272,7 +272,7 @@ class TestControls(WebTest):
 
     def test_filter_panel_serialization(self):
         self.assertEqual(
-            FilterPanel().serialize(),
+            FilterPanel([]).serialize(),
             {
                 'object_type': 'filter_panel',
                 'children': [],
@@ -280,7 +280,7 @@ class TestControls(WebTest):
             }
         )
         self.assertEqual(
-            FilterPanel(label='test_label').serialize(),
+            FilterPanel([], label='test_label').serialize(),
             {
                 'object_type': 'filter_panel',
                 'children': [],
@@ -290,7 +290,7 @@ class TestControls(WebTest):
 
     def test_filter_group_serialization(self):
         self.assertEqual(
-            FilterGroup().serialize(),
+            FilterGroup([]).serialize(),
             {
                 'object_type': 'filter_group',
                 'children': [],
@@ -298,7 +298,7 @@ class TestControls(WebTest):
             }
         )
         self.assertEqual(
-            FilterGroup(label='test_label').serialize(),
+            FilterGroup([], label='test_label').serialize(),
             {
                 'object_type': 'filter_group',
                 'children': [],
@@ -308,7 +308,7 @@ class TestControls(WebTest):
 
     def test_sort_panel_serialization(self):
         self.assertEqual(
-            SortPanel().serialize(),
+            SortPanel([]).serialize(),
             {
                 'object_type': 'sort_panel',
                 'children': [],
@@ -316,7 +316,7 @@ class TestControls(WebTest):
             }
         )
         self.assertEqual(
-            SortPanel(label='test_label').serialize(),
+            SortPanel([], label='test_label').serialize(),
             {
                 'object_type': 'sort_panel',
                 'children': [],
@@ -326,7 +326,7 @@ class TestControls(WebTest):
 
     def test_layout_controls_serialization(self):
         self.assertEqual(
-            LayoutControls().serialize(),
+            LayoutControls([]).serialize(),
             {
                 'object_type': 'layout_controls',
                 'children': [],
@@ -337,10 +337,10 @@ class TestControls(WebTest):
         self.assertEqual(
             ListControls([
                 ListControls([
-                    ListControls(),
+                    ListControls([]),
                 ]),
                 ListControls([
-                    ListControls(),
+                    ListControls([]),
                 ])
             ]).serialize(),
             {
