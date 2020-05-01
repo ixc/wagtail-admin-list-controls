@@ -31,39 +31,20 @@ class BaseControl:
         return hierarchy
 
 
-class BaseDataControl(BaseControl):
+class BaseToggle(BaseControl):
+    is_selected = False
+    name = None
     cleaned_value = None
 
-    def __init__(self, name, apply_to_queryset=None, *args, **kwargs):
+    def __init__(self, name, value, apply_to_queryset=None, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
         self.name = name
+        self.value = value
         self._apply_to_queryset = apply_to_queryset
 
     def prepare(self, request):
         self.cleaned_value = self.clean(request)
-
-    def clean(self, request):
-        return request.GET.get(self.name)
-
-    def serialize(self):
-        return dict(super().serialize(), **{
-            'name': self.name,
-            'value': self.cleaned_value,
-        })
-
-
-class BaseToggle(BaseDataControl):
-    is_selected = False
-
-    def __init__(self, value, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-
-        self.value = value
-
-    def prepare(self, *args, **kwargs):
-        super().prepare(*args, **kwargs)
-
         self.is_selected = self.cleaned_value == self.value
 
     def clean(self, request):
@@ -82,21 +63,30 @@ class BaseToggle(BaseDataControl):
         })
 
 
-class BaseFilter(BaseDataControl):
-    HALF_WIDTH = 'half_width'
-    FULL_WIDTH = 'full_width'
-
+class BaseFilter(BaseControl):
     object_type = 'filter'
     filter_type = ''
+    name = None
+    cleaned_value = None
 
-    def __init__(self, label=None, width=HALF_WIDTH, *args, **kwargs):
+    def __init__(self, name, label=None, apply_to_queryset=None, default_value=None, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
+        self.name = name
         if label:
             self.label = label
         else:
             self.label = self.name
-        self.width = width
+        self._apply_to_queryset = apply_to_queryset
+        self.default_value = default_value
+
+    def prepare(self, request):
+        self.cleaned_value = self.clean(request)
+        if self.cleaned_value is None:
+            self.cleaned_value = self.default_value
+
+    def clean(self, request):
+        return request.GET.get(self.name)
 
     def apply_to_queryset(self, queryset):
         if self._apply_to_queryset:
@@ -106,6 +96,7 @@ class BaseFilter(BaseDataControl):
     def serialize(self):
         return dict(super().serialize(), **{
             'filter_type': self.filter_type,
+            'name': self.name,
             'label': self.label,
-            'width': self.width,
+            'value': self.cleaned_value,
         })

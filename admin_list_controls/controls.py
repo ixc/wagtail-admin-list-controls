@@ -11,6 +11,20 @@ class ListControls(BaseControl):
         self.children = children
 
 
+class Block(BaseControl):
+    object_type = 'block'
+
+    def __init__(self, width=None, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        self.width = width
+
+    def serialize(self):
+        return dict(super().serialize(), **{
+            'width': self.width,
+        })
+
+
 class FilterPanel(BaseControl):
     object_type = 'filter_panel'
     label = _('Filters')

@@ -34,36 +34,6 @@ class TestViews(WebTest):
         self.assertIn('admin_list_controls', response.context_data)
         self.assertIsInstance(response.context_data['admin_list_controls'], dict)
 
-    def test_view_can_aggregate_filters(self):
-        class TestView(ListControlsIndexView):
-            def build_list_controls(self):
-                return ListControls([
-                    TextFilter(name='test_name_1'),
-                    TextFilter(name='test_name_2'),
-                    FilterPanel([
-                        TextFilter(name='test_name_3'),
-                        FilterPanel([
-                            TextFilter(name='test_name_4'),
-                        ]),
-                    ]),
-                    FilterPanel([
-                        TextFilter(name='test_name_5'),
-                    ]),
-                    TextFilter(name='test_name_6'),
-                ])
-
-        view_class = self.instantiate_list_view_class(TestView)
-        filters = view_class.get_list_control_filters()
-        filter_names = [obj.name for obj in filters]
-        self.assertEqual(filter_names, [
-            'test_name_1',
-            'test_name_2',
-            'test_name_3',
-            'test_name_4',
-            'test_name_5',
-            'test_name_6',
-        ])
-
     def create_superuser_request(self, url):
         request = self.factory.get(url)
         request.user = self.superuser

@@ -23,21 +23,24 @@ class TestControls(WebTest):
                 'object_type': 'filter',
                 'children': [],
                 'filter_type': '',
-                'width': TextFilter.HALF_WIDTH,
                 'name': 'test_name',
                 'label': 'test_label',
                 'value': 'test_value',
             },
         )
 
-    def test_base_filter_with_width(self):
+    def test_base_filter_with_default_value(self):
         filter_ = BaseFilter(
             name='test_name',
             label='test_label',
-            width=BaseFilter.FULL_WIDTH,
+            default_value='test_default_value',
         )
         filter_.prepare(self.factory.get('/'))
-        self.assertEqual(filter_.serialize()['width'], TextFilter.FULL_WIDTH)
+        self.assertEqual(filter_.cleaned_value, 'test_default_value')
+        filter_.prepare(self.factory.get('/?test_name'))
+        self.assertEqual(filter_.cleaned_value, '')
+        filter_.prepare(self.factory.get('/?test_name=test_value'))
+        self.assertEqual(filter_.cleaned_value, 'test_value')
 
     def test_text_filter_value(self):
         filter_ = TextFilter(
