@@ -6,8 +6,10 @@ class BaseFilter(BaseComponent):
     filter_type = ''
     name = None
     cleaned_value = None
+    can_have_children = False
 
-    def __init__(self, name, label=None, apply_to_queryset=None, default_value=None):
+    def __init__(self, name, label=None, apply_to_queryset=None, default_value=None, **kwargs):
+        super().__init__(**kwargs)
         self.name = name
         if label:
             self.label = label

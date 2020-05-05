@@ -1,4 +1,4 @@
-{% extends 'modeladmin/index.html' %}
+{% extends admin_list_controls.index_template %}
 
 {% block result_list %}
     {% if admin_list_controls_selected_layout and admin_list_controls_selected_layout.template %}
@@ -10,8 +10,5 @@
 
 {% block extra_js %}
     {{ block.super }}
-    <script>
-        window.admin_list_controls_initial_state = {{ admin_list_controls_initial_state|safe }};
-    </script>
-    {{ admin_list_controls_widget_js }}
+    {% include 'admin_list_controls/init_index_js.html' %}
 {% endblock %}

@@ -1,9 +1,7 @@
 "use strict";
 
 const path = require('path');
-const webpack = require('webpack');
 const WebpackManifestPlugin = require('webpack-yam-plugin');
-const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 
 const PRODUCTION = process.env.PRODUCTION === '1';
@@ -30,13 +28,9 @@ module.exports = function() {
 		module: {
 			rules: [
 				{
-					test: /\.tsx?$/,
-					loader: 'ts-loader',
-					options: {
-						// Disable type checking - the fork plugin will execute it
-						transpileOnly: true
-					},
-					exclude: /node_modules/,
+					test: /\.jsx?$/,
+					exclude: /node_modules|bower_components/,
+					loader: 'babel-loader'
 				},
 				{
 					test: /\.s[ac]ss$/i,
@@ -48,15 +42,11 @@ module.exports = function() {
 				},
 			]
 		},
-		resolve: {
-			extensions: ['.tsx', '.ts', '.js'],
-		},
 		plugins: [
 			new WebpackManifestPlugin({
 				manifestPath: MANIFEST_PATH,
 				outputRoot: STATIC_ROOT
 			}),
-			new ForkTsCheckerWebpackPlugin(),
 			// All files inside webpack's output.path directory will be removed once, but the
          	// directory itself will not be. If using webpack 4+'s default configuration,
          	// everything under <PROJECT_DIR>/dist/ will be removed.
@@ -73,7 +63,6 @@ module.exports = function() {
 		config.mode = 'production';
 		config.devtool = 'source-map';
 	} else {
-		config.plugins.push(new webpack.NoEmitOnErrorsPlugin());
 		config.mode = 'development';
 		config.devtool = 'eval-source-map';
 	}

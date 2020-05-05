@@ -19,7 +19,7 @@ class ListControlsIndexViewMixin:
         """
         A hook provided to declare the filters for the UI
         """
-        return ListControls([])
+        return ListControls()
 
     def apply_list_controls_to_queryset(self, queryset):
         """
@@ -33,12 +33,13 @@ class ListControlsIndexViewMixin:
         return self._built_list_controls
 
     def get_selected_list_control_layout(self):
-        for obj in self.get_list_controls().flatten_hierarchy():
-            if obj.object_type == Layout.object_type and obj.is_selected:
-                return obj
+        pass
+        # for obj in self.get_list_controls().flatten_hierarchy():
+        #     if obj.object_type == Layout.object_type and obj.is_selected:
+        #         return obj
 
     def get_template_names(self):
-        return ['admin_list_controls/admin_list_controls.html'] + super().get_template_names()
+        return ['admin_list_controls/index.html'] + super().get_template_names()
 
     def get_filters_params(self, params=None):
         """
@@ -63,6 +64,7 @@ class ListControlsIndexViewMixin:
 
         # Consumed by the front-end code to build the UI
         context_data['admin_list_controls'] = {
+            'index_template': self.get_list_controls_index_template(),
             'initial_state': json.dumps({
                 'admin_list_controls': self.get_list_controls().serialize(),
             }),
@@ -71,6 +73,9 @@ class ListControlsIndexViewMixin:
         }
 
         return context_data
+
+    def get_list_controls_index_template(self):
+        return 'modeladmin/index.html'
 
     def get_list_controls_widget_js(self):
         manifest_path = os.path.join(

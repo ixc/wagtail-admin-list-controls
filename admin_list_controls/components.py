@@ -1,31 +1,70 @@
 from collections.abc import Iterable
+from .exceptions import ConfigurationError
 
 
 class BaseComponent:
     object_type = ''
     children = None
+    can_have_children = True
     _flattened_hierarchy = None
+    _added_children = False
 
-    # def __call__(self, *args):
-    #     return self.set_children(*args)
-    #
-    # def set_children(self, *args):
-    #     self.children = args
-    #     return self
+    def __init__(self, style=None):
+        self.style = self.get_default_style()
+        if style:
+            self.style.update(style)
+
+    def __call__(self, *args):
+        return self.set_children(*args)
+
+    def set_children(self, *args):
+        if self._added_children:
+            raise ConfigurationError('Children have already been defined')
+        if not self.can_have_children:
+            raise ConfigurationError('%s cannot have children' % type(self))
+        self._added_children = True
+        self.children = []
+        for child in args:
+            if isinstance(child, str):
+                self.children.append(
+                    Text(content=child))
+            else:
+                self.children.append(child)
+        return self
 
     def serialize(self):
-        serialized_children = []
+        serialized_children = None
         if self.children:
-            for child in self.children:
-                if isinstance(child, str):
-                    serialized_children.append(child)
-                else:
-                    serialized_children.append(child.serialize())
+            serialized_children = [
+                child.serialize()
+                for child in self.children
+            ]
 
         return {
             'object_type': self.object_type,
             'children': serialized_children,
+            'style': self.serialize_style(),
         }
+
+    def serialize_style(self):
+        """
+        Convert conventional css-props into the camel-case that React prefers
+        """
+        if not self.style:
+            return None
+
+        serialized = {}
+        for key, value in self.style.items():
+            if '-' in key:
+                parts = key.split('-')
+                converted = parts[0] + ''.join(part.title() for part in parts[1:])
+                serialized[converted] = value
+            else:
+                serialized[key] = value
+        return serialized
+
+    def get_default_style(self):
+        return {}
 
     def flatten_hierarchy(self):
         hierarchy = [self]
@@ -38,40 +77,29 @@ class BaseComponent:
 class ListControls(BaseComponent):
     object_type = 'list_controls'
 
-    def __init__(self, children):
-        self.children = children
-
 
 class Block(BaseComponent):
     object_type = 'block'
-    LEFT = 'left'
-    RIGHT = 'right'
 
-    def __init__(self, children, float=None):
-        self.children = children
-        self.float = float
 
-    def serialize(self):
-        return dict(super().serialize(), **{
-            'float': self.float,
-        })
+class Spacer(Block):
+    def get_default_style(self):
+        return {'padding-top': '20px'}
 
 
 class Row(BaseComponent):
     object_type = 'row'
 
-    def __init__(self, children):
-        self.children = children
-
 
 class Column(BaseComponent):
     object_type = 'column'
-    HALF_WIDTH = 'half_width'
+
     QUARTER_WIDTH = 'quarter_width'
+    HALF_WIDTH = 'half_width'
     FULL_WIDTH = 'full_width'
 
-    def __init__(self, children, width):
-        self.children = children
+    def __init__(self, width, **kwargs):
+        super().__init__(**kwargs)
         self.width = width
 
     def serialize(self):
@@ -82,13 +110,14 @@ class Column(BaseComponent):
 
 class Divider(BaseComponent):
     object_type = 'divider'
+    can_have_children = False
 
 
 class Panel(BaseComponent):
     object_type = 'panel'
 
-    def __init__(self, children, ref=None, collapsed=False):
-        self.children = children
+    def __init__(self, ref=None, collapsed=False, **kwargs):
+        super().__init__(**kwargs)
         self.ref = ref
         self.collapsed = collapsed
 
@@ -100,31 +129,34 @@ class Panel(BaseComponent):
 
 class Icon(BaseComponent):
     object_type = 'icon'
+    can_have_children = False
 
-    def __init__(self, class_name):
-        self.class_name = class_name
+    def __init__(self, classes, **kwargs):
+        super().__init__(**kwargs)
+        self.classes = classes
 
     def serialize(self):
         return dict(super().serialize(), **{
-            'class_name': self.class_name,
+            'classes': self.classes,
         })
 
 
 class Text(BaseComponent):
     object_type = 'text'
-    LARGE = 'large'
-    REGULAR = 'regular'
-    SMALL = 'small'
+    can_have_children = False
 
-    def __init__(self, children, size=REGULAR):
-        if isinstance(children, str):
-            self.children = [children]
-        else:
-            self.children = children
+    # Sizes
+    LARGE = 'large'
+    MEDIUM = 'medium'
+
+    def __init__(self, content, size=MEDIUM, **kwargs):
+        super().__init__(**kwargs)
+        self.content = content
         self.size = size
 
     def serialize(self):
         return dict(super().serialize(), **{
+            'content': self.content,
             'size': self.size,
         })
 
@@ -132,8 +164,8 @@ class Text(BaseComponent):
 class Button(BaseComponent):
     object_type = 'button'
 
-    def __init__(self, children, action=None):
-        self.children = children
+    def __init__(self, action=None, **kwargs):
+        super().__init__(**kwargs)
         if action is None:
             action = []
         elif not isinstance(action, Iterable):
@@ -152,8 +184,10 @@ class Button(BaseComponent):
 
 class Html(BaseComponent):
     object_type = 'html'
+    can_have_children = False
 
-    def __init__(self, content):
+    def __init__(self, content, **kwargs):
+        super().__init__(**kwargs)
         self.content = content
 
     def serialize(self):

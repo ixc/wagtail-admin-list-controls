@@ -4,7 +4,7 @@ from admin_list_controls.filters import BaseFilter, TextFilter, BooleanFilter, C
     MultipleChoiceFilter, RadioFilter
 
 
-class TestControls(WebTest):
+class TestFilters(WebTest):
     def setUp(self):
         self.factory = RequestFactory()
 
@@ -19,11 +19,12 @@ class TestControls(WebTest):
             filter_.serialize(),
             {
                 'object_type': 'filter',
-                'children': [],
+                'children': None,
                 'filter_type': '',
                 'name': 'test_name',
                 'label': 'test_label',
                 'value': 'test_value',
+                'style': None,
             },
         )
 

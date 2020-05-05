@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     # Wagtail
     'wagtail.contrib.forms',
     'wagtail.contrib.redirects',
+    'wagtail.contrib.modeladmin',
     'wagtail.embeds',
     'wagtail.sites',
     'wagtail.users',
@@ -53,6 +54,8 @@ INSTALLED_APPS = [
     'modelcluster',
     'taggit',
 
+    'admin_list_controls',
+    
     # Test apps
     'shop',
 ]

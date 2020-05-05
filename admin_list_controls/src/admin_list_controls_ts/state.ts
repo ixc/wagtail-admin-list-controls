@@ -91,10 +91,7 @@ function get_initial_state(): State {
         throw new Error('Global `admin_list_controls_initial_state` has not been defined');
     }
 
-    const initial_state = _.assign({
-        show_filters: false,
-        show_sorts: false,
-    }, window.admin_list_controls_initial_state);
+    const initial_state = _.assign({}, window.admin_list_controls_initial_state);
 
     // Normalize the filter data
     initial_state.filter_map = {};

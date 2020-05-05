@@ -6,71 +6,72 @@ from admin_list_controls.components import ListControls, Block, Row, Column, Div
 class TestComponents(TestCase):
     def test_list_controls_component(self):
         self.assertEqual(
-            ListControls([]).serialize(),
+            ListControls().serialize(),
             {
                 'object_type': 'list_controls',
-                'children': [],
+                'children': None,
+                'style': None,
+            },
+        )
+        self.assertEqual(
+            ListControls()(ListControls()).serialize(),
+            {
+                'object_type': 'list_controls',
+                'children': [{
+                    'object_type': 'list_controls',
+                    'children': None,
+                    'style': None,
+                }],
+                'style': None,
             },
         )
 
     def test_block_component(self):
         self.assertEqual(
-            Block([]).serialize(),
+            Block().serialize(),
             {
                 'object_type': 'block',
-                'children': [],
-                'float': None,
-            },
-        )
-        self.assertEqual(
-            Block([], float=Block.LEFT).serialize(),
-            {
-                'object_type': 'block',
-                'children': [],
-                'float': 'left',
-            },
-        )
-        self.assertEqual(
-            Block([], float=Block.RIGHT).serialize(),
-            {
-                'object_type': 'block',
-                'children': [],
-                'float': 'right',
+                'children': None,
+                'style': None,
             },
         )
 
     def test_row_component(self):
         self.assertEqual(
-            Row([]).serialize(),
+            Row().serialize(),
             {
                 'object_type': 'row',
-                'children': [],
+                'children': None,
+                'style': None,
             },
         )
 
     def test_column_component(self):
         self.assertEqual(
-            Column([], width=Column.HALF_WIDTH).serialize(),
+            Column(width=Column.HALF_WIDTH).serialize(),
             {
                 'object_type': 'column',
-                'children': [],
+                'children': None,
                 'width': 'half_width',
+                'style': None,
             },
         )
         self.assertEqual(
-            Column([], width=Column.QUARTER_WIDTH).serialize(),
+            Column(width=Column.QUARTER_WIDTH).serialize(),
             {
                 'object_type': 'column',
-                'children': [],
+                'children': None,
                 'width': 'quarter_width',
+                'style': None,
             },
         )
         self.assertEqual(
-            Column([], width=Column.FULL_WIDTH).serialize(),
+            Column(width=Column.FULL_WIDTH).serialize(),
             {
                 'object_type': 'column',
-                'children': [],
+                'children': None,
                 'width': 'full_width',
+                'style': None,
             },
         )
 
@@ -79,95 +80,101 @@ class TestComponents(TestCase):
             Divider().serialize(),
             {
                 'object_type': 'divider',
-                'children': [],
+                'children': None,
+                'style': None,
             },
         )
 
     def test_panel_component(self):
         self.assertEqual(
-            Panel([]).serialize(),
+            Panel().serialize(),
             {
                 'object_type': 'panel',
-                'children': [],
+                'children': None,
                 'collapsed': False,
+                'style': None,
             },
         )
         self.assertEqual(
-            Panel([], collapsed=True).serialize(),
+            Panel(collapsed=True).serialize(),
             {
                 'object_type': 'panel',
-                'children': [],
+                'children': None,
                 'collapsed': True,
+                'style': None,
             },
         )
         self.assertEqual(
-            Panel([], collapsed=False).serialize(),
+            Panel(collapsed=False).serialize(),
             {
                 'object_type': 'panel',
-                'children': [],
+                'children': None,
                 'collapsed': False,
+                'style': None,
             },
         )
 
     def test_icon_component(self):
         self.assertEqual(
-            Icon(class_name='test_class_name').serialize(),
+            Icon(classes='test_class_name').serialize(),
             {
                 'object_type': 'icon',
-                'children': [],
-                'class_name': 'test_class_name',
+                'children': None,
+                'classes': 'test_class_name',
+                'style': None,
             },
         )
 
     def test_text_component(self):
         self.assertEqual(
-            Text([]).serialize(),
+            Text('').serialize(),
             {
                 'object_type': 'text',
-                'children': [],
-                'size': 'regular',
+                'children': None,
+                'content': '',
+                'size': 'medium',
+                'style': None,
             },
         )
         self.assertEqual(
             Text('test').serialize(),
             {
                 'object_type': 'text',
-                'children': ['test'],
-                'size': 'regular',
+                'children': None,
+                'content': 'test',
+                'size': 'medium',
+                'style': None,
             },
         )
         self.assertEqual(
-            Text('test', size=Text.SMALL).serialize(),
+            Text('test', size=Text.MEDIUM).serialize(),
             {
                 'object_type': 'text',
-                'children': ['test'],
-                'size': 'small',
-            },
-        )
-        self.assertEqual(
-            Text('test', size=Text.REGULAR).serialize(),
-            {
-                'object_type': 'text',
-                'children': ['test'],
-                'size': 'regular',
+                'children': None,
+                'content': 'test',
+                'size': 'medium',
+                'style': None,
             },
         )
         self.assertEqual(
             Text('test', size=Text.LARGE).serialize(),
             {
                 'object_type': 'text',
-                'children': ['test'],
+                'children': None,
+                'content': 'test',
                 'size': 'large',
+                'style': None,
             },
         )
 
     def test_button_component(self):
         self.assertEqual(
-            Button([]).serialize(),
+            Button().serialize(),
             {
                 'object_type': 'button',
-                'children': [],
+                'children': None,
                 'action': [],
+                'style': None,
             },
         )
 
@@ -176,20 +183,22 @@ class TestComponents(TestCase):
                 return 'serialized_fake_action'
 
         self.assertEqual(
-            Button([], action=FakeAction()).serialize(),
+            Button(action=FakeAction()).serialize(),
             {
                 'object_type': 'button',
-                'children': [],
+                'children': None,
                 'action': ['serialized_fake_action'],
+                'style': None,
             },
         )
 
         self.assertEqual(
-            Button([], action=[FakeAction(), FakeAction()]).serialize(),
+            Button(action=[FakeAction(), FakeAction()]).serialize(),
             {
                 'object_type': 'button',
-                'children': [],
+                'children': None,
                 'action': ['serialized_fake_action', 'serialized_fake_action'],
+                'style': None,
             },
         )
 
@@ -198,35 +207,57 @@ class TestComponents(TestCase):
             Html('test_content').serialize(),
             {
                 'object_type': 'html',
-                'children': [],
+                'children': None,
                 'content': 'test_content',
+                'style': None,
             },
         )
 
     def test_nested_serialization(self):
         self.assertEqual(
-            ListControls([
-                ListControls([
-                    ListControls([]),
-                ]),
-                ListControls([
-                    ListControls([]),
-                ])
-            ]).serialize(),
+            ListControls()(
+                ListControls()(
+                    ListControls(),
+                ),
+                ListControls()(
+                    ListControls(),
+                ),
+            ).serialize(),
             {
                 'object_type': 'list_controls',
                 'children': [{
                     'object_type': 'list_controls',
                     'children': [{
                         'object_type': 'list_controls',
-                        'children': [],
+                        'children': None,
+                        'style': None,
                     }],
+                    'style': None,
                 }, {
                     'object_type': 'list_controls',
                     'children': [{
                         'object_type': 'list_controls',
-                        'children': [],
+                        'children': None,
+                        'style': None,
                     }],
+                    'style': None,
                 }],
+                'style': None,
+            }
+        )
+
+    def test_string_children_are_converted_to_text(self):
+        self.assertEqual(
+            ListControls()(
+                'test string 1',
+                'test string 2'
+            ).serialize(),
+            {
+                'object_type': 'list_controls',
+                'children': [
+                    Text(content='test string 1').serialize(),
+                    Text(content='test string 2').serialize(),
+                ],
+                'style': None,
             }
         )
