@@ -2,7 +2,7 @@ from django.utils.translation import gettext as _
 from wagtail.contrib.modeladmin.options import ModelAdmin, modeladmin_register
 from wagtail.contrib.modeladmin.views import IndexView
 from admin_list_controls.views import ListControlsIndexViewMixin
-from admin_list_controls.controls import ListControls, MultipleChoiceFilter, FilterPanel
+from admin_list_controls.components import ListControls, Button, Icon, Text
 from .models import Product
 
 
@@ -11,17 +11,37 @@ from .models import Product
 class ProductAdminIndexView(IndexView, ListControlsIndexViewMixin):
     def build_list_controls(self):
         return ListControls([
-            FilterPanel(
-                label=_('Advanced search'),
-                children=[
-                    MultipleChoiceFilter(
-                        name='product_type',
-                        label=_('Colour'),
-                        choices=Product.PRODUCT_TYPE_CHOICES,
-                        apply_to_queryset=lambda queryset, values: queryset.filter(product_type__in=values),
-                    ),
-                ],
-            ),
+            # Button(
+            #     action=Something
+            # )(
+            #     Icon('icon-search'),
+            #     Text('Some text component'),
+            #     'An empty string',
+            # ),
+            # Button([
+            #     Icon('icon-search'),
+            #     Text('Some text component'),
+            #     Text(size=Text.LARGE)(
+            #         'Some text component'
+            #     ),
+            #     Panel(ref='some_id')(
+            #         Text('something'),
+            #         Button()('some text'),
+            #     ),
+            #     'An empty string',
+            # ], action=Something),
+            # Button()(
+            #     Icon('icon-search'),
+            #     Text('Some text component'),
+            #     'An empty string',
+            # ),
+            # Button([
+            #     Icon('icon-search'),
+            #     Text('Some text component'),
+            #     'An empty string',
+            # ]),
+            # Button()('An empty string'),
+            # Button(['An empty string']),
         ])
 
 

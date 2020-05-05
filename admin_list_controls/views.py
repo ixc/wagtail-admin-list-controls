@@ -3,7 +3,7 @@ import json
 from django.conf import settings
 from django.utils.safestring import mark_safe
 from wagtail.contrib.modeladmin.views import IndexView
-from .controls import ListControls, Layout
+from .components import ListControls
 from .vendor import webpack_manifest
 
 
