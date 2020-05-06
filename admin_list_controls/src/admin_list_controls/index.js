@@ -36,7 +36,7 @@ function mount(cb) {
     ReactDOM.render(<BoundInputs />, input_root, cb);
 }
 
-export function submit_search() {
+export function submit_form() {
     mount(() => {
         form.submit();
     });

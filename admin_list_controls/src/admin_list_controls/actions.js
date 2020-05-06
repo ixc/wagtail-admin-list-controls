@@ -1,4 +1,4 @@
-import {TOGGLE_PANEL} from "./constants";
+import {SET_VALUE, SUBMIT_FORM, TOGGLE_PANEL} from "./constants";
 
 export function create_action(action) {
     switch(action.action_type) {
@@ -8,10 +8,18 @@ export function create_action(action) {
                 ref: action.ref,
             };
         case 'set_value':
+            return {
+                type: SET_VALUE,
+                name: action.name,
+                value: action.value,
+            }
+        case 'submit_form':
+            return {
+                type: SUBMIT_FORM,
+            };
         case 'append_value':
         case 'remove_value':
         case 'link':
-        case 'submit_form':
         default:
             console.error('Unknown action type', action);
             throw new Error(`Unknown action ${action.action_type}`);

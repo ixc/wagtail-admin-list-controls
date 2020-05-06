@@ -3,7 +3,7 @@ from wagtail.contrib.modeladmin.options import ModelAdmin, modeladmin_register
 from wagtail.contrib.modeladmin.views import IndexView
 from admin_list_controls.views import ListControlsIndexViewMixin
 from admin_list_controls.components import ListControls, Button, Icon, Text, Panel, Divider, Block, Spacer
-from admin_list_controls.actions import TogglePanel
+from admin_list_controls.actions import TogglePanel, SetValue, SubmitForm
 from .models import Product
 
 
@@ -19,9 +19,23 @@ class ProductAdminIndexView(ListControlsIndexViewMixin, IndexView):
                 Text('Some text component '),
                 'A raw string',
             ),
-            Button(
-                action=TogglePanel(ref='some_other_panel_ref'),
-            )('Second panel'),
+            Button(action=TogglePanel(ref='some_other_panel_ref'))(
+                'Second panel'
+            ),
+            Block(style={'float': 'right'})(
+                Button(action=[
+                    SetValue(name='layout', value='grid'),
+                    SubmitForm(),
+                ])(
+                    'Grid view'
+                ),
+                Button(action=[
+                    SetValue(name='layout', value='list'),
+                    SubmitForm(),
+                ])(
+                    'List view'
+                ),
+            ),
             Panel(ref='some_panel_ref', collapsed=True)(
                 Text('something'),
                 Button()('some text'),
