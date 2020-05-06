@@ -65,6 +65,7 @@ class Link(BaseAction):
 
 class TogglePanel(BaseAction):
     action_type = 'toggle_panel'
+    show_panel_toggle_icon = True
 
     def __init__(self, ref):
         self.ref = ref
@@ -72,6 +73,7 @@ class TogglePanel(BaseAction):
     def serialize(self):
         return dict(super().serialize(), **{
             'ref': self.ref,
+            'show_panel_toggle_icon': self.show_panel_toggle_icon,
         })
 
 

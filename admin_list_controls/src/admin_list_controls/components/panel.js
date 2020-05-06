@@ -1,9 +1,19 @@
 import React from "react";
-import { render_control } from "./render_control";
+import c from 'classnames';
+import {render_control} from "./root";
+import {store} from "../state";
 
 export function Panel({control}) {
+    const state = store.getState();
+    let is_collapsed = control.collapsed;
+    if (control.ref && control.ref in state.collapsed_panels_by_ref) {
+        is_collapsed = state.collapsed_panels_by_ref[control.ref];
+    }
     return (
-        <div className="alc__panel" style={control.style}>
+        <div
+            className={c('alc__panel', {'is-collapsed': is_collapsed})}
+            style={control.style}
+        >
             {control.children && control.children.map(control => render_control(control))}
         </div>
     );

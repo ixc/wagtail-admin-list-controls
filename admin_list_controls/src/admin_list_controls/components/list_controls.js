@@ -1,5 +1,5 @@
 import React from "react";
-import { render_control } from "./render_control";
+import { render_control } from "./root";
 
 export function ListControls({control}) {
     return (

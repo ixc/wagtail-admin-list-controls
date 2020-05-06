@@ -13,6 +13,7 @@ class BaseComponent:
         self.style = self.get_default_style()
         if style:
             self.style.update(style)
+        self.component_id = '%s-%s' % (type(self).__name__, id(self))
 
     def __call__(self, *args):
         return self.set_children(*args)
@@ -41,6 +42,7 @@ class BaseComponent:
             ]
 
         return {
+            'component_id': self.component_id,
             'object_type': self.object_type,
             'children': serialized_children,
             'style': self.serialize_style(),
@@ -123,6 +125,7 @@ class Panel(BaseComponent):
 
     def serialize(self):
         return dict(super().serialize(), **{
+            'ref': self.ref,
             'collapsed': self.collapsed,
         })
 

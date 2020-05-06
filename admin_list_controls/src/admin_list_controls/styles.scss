@@ -12,8 +12,18 @@
   margin-top: 20px;
 }
 
+.alc__panel.is-collapsed {
+  display: none;
+}
+
 .alc__button {
   background-color: #00676a;
+}
+
+.alc__button:hover,
+.alc__button:active,
+.alc__button:focus {
+  background-color: #00585a;
 }
 
 .alc__text + .alc__button {
@@ -24,6 +34,18 @@
   font-size: 20px;
 }
 
-.alc__icon .alc__text {
-  margin-left: 6px;
+.alc__icon + .alc__text {
+  margin-left: 3px;
+}
+
+.alc__text + .alc__icon {
+  margin-left: 3px;
+}
+
+// Collapse/expand icons in buttons
+.alc__icon--panel-toggle {
+  display: inline-block;
+  width: 15px;
+  line-height: 18px;
+  font-size: 18px;
 }

@@ -19,7 +19,10 @@ class ProductAdminIndexView(ListControlsIndexViewMixin, IndexView):
                 Text('Some text component '),
                 'A raw string',
             ),
-            Panel(ref='some_panel_ref')(
+            Button(
+                action=TogglePanel(ref='some_other_panel_ref'),
+            )('Second panel'),
+            Panel(ref='some_panel_ref', collapsed=True)(
                 Text('something'),
                 Button()('some text'),
             ),
