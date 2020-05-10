@@ -11,7 +11,7 @@ export function Panel({control}) {
     }
     return (
         <div
-            className={c('alc__panel', {'is-collapsed': is_collapsed})}
+            className={c('alc__panel', {'is-collapsed': is_collapsed}, control.extra_classes)}
             style={control.style}
         >
             {control.children && control.children.map(control => render_control(control))}

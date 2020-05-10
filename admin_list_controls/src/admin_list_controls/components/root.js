@@ -7,6 +7,7 @@ import {Icon} from "./icon";
 import {Text} from "./text";
 import {Divider} from "./divider";
 import {Block} from "./block";
+import {Selector} from "./selector";
 
 export function Root() {
     const state = store.getState();
@@ -33,6 +34,8 @@ export function render_control(control) {
             return <Divider key={control.component_id} control={control}/>;
         case 'block':
             return <Block key={control.component_id} control={control}/>;
+        case 'selector':
+            return <Selector key={control.component_id} control={control}/>;
         default:
             console.error('Unknown control type', control);
             throw new Error(`Unknown control ${control.object_type}`);

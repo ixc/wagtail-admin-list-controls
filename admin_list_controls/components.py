@@ -9,10 +9,11 @@ class BaseComponent:
     _flattened_hierarchy = None
     _added_children = False
 
-    def __init__(self, style=None):
+    def __init__(self, style=None, extra_classes=None):
         self.style = self.get_default_style()
         if style:
             self.style.update(style)
+        self.extra_classes = extra_classes
         self.component_id = '%s-%s' % (type(self).__name__, id(self))
 
     def __call__(self, *args):
@@ -46,6 +47,7 @@ class BaseComponent:
             'object_type': self.object_type,
             'children': serialized_children,
             'style': self.serialize_style(),
+            'extra_classes': self.extra_classes,
         }
 
     def serialize_style(self):
@@ -134,14 +136,10 @@ class Icon(BaseComponent):
     object_type = 'icon'
     can_have_children = False
 
-    def __init__(self, classes, **kwargs):
+    def __init__(self, classes=None, **kwargs):
+        if classes:
+            kwargs['extra_classes'] = classes
         super().__init__(**kwargs)
-        self.classes = classes
-
-    def serialize(self):
-        return dict(super().serialize(), **{
-            'classes': self.classes,
-        })
 
 
 class Text(BaseComponent):

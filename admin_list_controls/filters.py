@@ -18,7 +18,7 @@ class BaseFilter(BaseComponent):
         self._apply_to_queryset = apply_to_queryset
         self.default_value = default_value
 
-    def prepare(self, request):
+    def handle_request(self, request):
         self.cleaned_value = self.clean(request)
         if self.cleaned_value is None:
             self.cleaned_value = self.default_value

@@ -4,6 +4,7 @@ from django.conf import settings
 from django.utils.safestring import mark_safe
 from wagtail.contrib.modeladmin.views import IndexView
 from .components import ListControls
+from .selectors import Layout
 from .vendor import webpack_manifest
 
 
@@ -14,6 +15,7 @@ class ListControlsIndexViewMixin:
 
     _built_list_controls = None
     _items_per_page = None
+    _has_prepared_list_controls = False
 
     def build_list_controls(self):
         """
@@ -33,10 +35,9 @@ class ListControlsIndexViewMixin:
         return self._built_list_controls
 
     def get_selected_list_control_layout(self):
-        pass
-        # for obj in self.get_list_controls().flatten_hierarchy():
-        #     if obj.object_type == Layout.object_type and obj.is_selected:
-        #         return obj
+        for obj in self.get_list_controls().flatten_hierarchy():
+            if obj.object_type == Layout.object_type and obj.is_selected:
+                return obj
 
     def get_template_names(self):
         return ['admin_list_controls/index.html'] + super().get_template_names()
@@ -56,8 +57,9 @@ class ListControlsIndexViewMixin:
 
     def get_search_results(self, *args, **kwargs):
         queryset = super().get_search_results(*args, **kwargs)
-        queryset = self.apply_list_controls_to_queryset(queryset)
-        return queryset
+
+        self.prepare_list_controls()
+        return self.apply_list_controls_to_queryset(queryset)
 
     def get_context_data(self, **kwargs):
         context_data = super().get_context_data(**kwargs)
@@ -88,6 +90,45 @@ class ListControlsIndexViewMixin:
             debug=settings.DEBUG,
         )
         return mark_safe(str(manifest.admin_list_controls.js))
+
+    def prepare_list_controls(self):
+        # The lifecycle hooks we use to wire into the request/response are sometimes
+        # executed multiple times per-request. To avoid odd bugs (components wrapping
+        # other components multiple times, etc), we need to manually enforce a single
+        # execution of the following method
+        if self._has_prepared_list_controls:
+            return
+        self._has_prepared_list_controls = True
+
+        controls_by_name = {}
+        for obj in self.get_list_controls().flatten_hierarchy():
+            # Allow objects
+            if hasattr(obj, 'handle_request'):
+                obj.handle_request(self.request)
+            name = getattr(obj, 'name', None)
+            if name:
+                if name not in controls_by_name:
+                    controls_by_name[name] = []
+                controls_by_name[name].append(obj)
+
+        # If no selectors have been selected for a particular param,
+        # indicate the default selectors should be used
+        for name, controls in controls_by_name.items():
+            has_selected = False
+            for control in controls:
+                if control.is_selected:
+                    has_selected = True
+                    break
+            if not has_selected:
+                for control in controls:
+                    if control.is_default:
+                        control.is_selected = True
+                        break
+
+        # Some objects wrap their children in other components
+        for obj in self.get_list_controls().flatten_hierarchy():
+            if hasattr(obj, 'prepare_children'):
+                obj.prepare_children()
 
 
 class ListControlsIndexView(ListControlsIndexViewMixin, IndexView):

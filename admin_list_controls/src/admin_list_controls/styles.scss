@@ -26,6 +26,14 @@
   background-color: #00585a;
 }
 
+.alc__button.is-selected {
+  background-color: darken(#00676a, 8);
+}
+
+.alc__button.is-selected .alc__text {
+  text-decoration: underline;
+}
+
 .alc__text + .alc__button {
   margin-left: 20px;
 }

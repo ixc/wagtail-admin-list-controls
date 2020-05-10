@@ -1,4 +1,5 @@
 import React from "react";
+import c from "classnames";
 import {render_control} from "./root";
 import {create_action} from "../actions";
 import {store} from "../state";
@@ -33,7 +34,7 @@ export function Button({control}) {
 
     return (
         <button
-            className="alc__button button"
+            className={c('alc__button button', control.extra_classes)}
             onClick={onClick}
             style={control.style}
         >

@@ -27,6 +27,11 @@ function reducer(current_state=initial_state, action) {
             case c.SET_VALUE:
                 state.values[action.name] = [action.value];
                 return;
+            case c.REMOVE_VALUE:
+                if (action.name in state.values) {
+                    state.values[action.name] = _.pull(state.values[action.name], action.value);
+                }
+                return;
             case c.SUBMIT_FORM:
                 submit_form();
                 return;
