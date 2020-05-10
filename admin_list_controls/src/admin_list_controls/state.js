@@ -1,7 +1,7 @@
 import { createStore } from 'redux';
 import immer from "immer";
 import _ from 'lodash';
-import * as c from './constants';
+import * as constants from './constants';
 import {submit_form} from "./index";
 
 export const initial_state = get_initial_state();
@@ -16,7 +16,7 @@ export const store = createStore(
 function reducer(current_state=initial_state, action) {
     return immer(current_state, state => {
         switch (action.type) {
-            case c.TOGGLE_PANEL:
+            case constants.TOGGLE_PANEL:
                 if (!(action.ref in state.collapsed_panels_by_ref)) {
                     const control = state.controls_by_ref[action.ref];
                     state.collapsed_panels_by_ref[action.ref] = !control.collapsed;
@@ -24,15 +24,18 @@ function reducer(current_state=initial_state, action) {
                     state.collapsed_panels_by_ref[action.ref] = !state.collapsed_panels_by_ref[action.ref];
                 }
                 return;
-            case c.SET_VALUE:
+            case constants.CLOSE_PANEL:
+                state.collapsed_panels_by_ref[action.ref] = true;
+                return;
+            case constants.SET_VALUE:
                 state.values[action.name] = [action.value];
                 return;
-            case c.REMOVE_VALUE:
+            case constants.REMOVE_VALUE:
                 if (action.name in state.values) {
                     state.values[action.name] = _.pull(state.values[action.name], action.value);
                 }
                 return;
-            case c.SUBMIT_FORM:
+            case constants.SUBMIT_FORM:
                 submit_form();
                 return;
             default:

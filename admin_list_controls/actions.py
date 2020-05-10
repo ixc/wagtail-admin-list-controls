@@ -77,5 +77,17 @@ class TogglePanel(BaseAction):
         })
 
 
+class ClosePanel(BaseAction):
+    action_type = 'close_panel'
+
+    def __init__(self, ref):
+        self.ref = ref
+
+    def serialize(self):
+        return dict(super().serialize(), **{
+            'ref': self.ref,
+        })
+
+
 class SubmitForm(BaseAction):
     action_type = 'submit_form'
