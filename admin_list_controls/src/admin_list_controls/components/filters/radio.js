@@ -1,12 +1,16 @@
 import React, {useState} from "react";
 import {SET_VALUE} from '../../constants';
 import {store} from '../../state';
+import c from "classnames";
 
 export function RadioFilter({control}) {
     const [value, set_value] = useState(control.value);
 
     return (
-        <div className="alc__filter alc__filter--radio">
+        <div
+            className={c('alc__filter', 'alc__filter--radio', control.extra_classes)}
+            style={control.style}
+        >
             {control.label
                 ? <label className="alc__filter__label">{control.label}</label>
                 : null

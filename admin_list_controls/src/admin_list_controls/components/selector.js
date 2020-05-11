@@ -4,14 +4,15 @@ import { render_control } from "./root";
 
 export function Selector({control}) {
     return (
-        <span
+        <div
             className={c(
                 'alc__selector',
                 `alc__selector--${control.selector_type}`,
                 control.extra_classes
             )}
+            style={control.style}
         >
             {control.children && control.children.map(control => render_control(control))}
-        </span>
+        </div>
     );
 }

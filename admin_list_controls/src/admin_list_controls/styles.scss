@@ -94,3 +94,13 @@
   padding-left: 5px;
   font-weight: normal;
 }
+
+.alc__selector {
+  display: inline-block;
+}
+
+.button + .alc__selector,
+.alc__selector + .button,
+.alc__selector + .alc__selector {
+  margin-left: 1em;
+}

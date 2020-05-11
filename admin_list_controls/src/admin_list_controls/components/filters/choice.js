@@ -3,6 +3,7 @@ import Select from 'react-select';
 import _ from 'lodash';
 import {SET_VALUE} from '../../constants';
 import {store} from '../../state';
+import c from "classnames";
 
 export function ChoiceFilter({control}) {
     const choices = [];
@@ -29,7 +30,10 @@ export function ChoiceFilter({control}) {
     const input_id = `alc__filter-${control.component_id}-${control.name}`;
 
     return (
-        <div className="alc__filter alc__filter--choice">
+        <div
+            className={c('alc__filter', 'alc__filter--choice', control.extra_classes)}
+            style={control.style}
+        >
             {control.label
                 ? <label className="alc__filter__label" htmlFor={input_id}>{control.label}</label>
                 : null
