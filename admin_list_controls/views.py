@@ -114,13 +114,17 @@ class ListControlsIndexViewMixin:
         # If no selectors have been selected for a particular param,
         # indicate the default selectors should be used
         for name, controls in controls_by_name.items():
+            selector_controls = [
+                control for control in controls
+                if control.object_type == 'selector'
+            ]
             has_selected = False
-            for control in controls:
-                if control.is_selected:
+            for control in selector_controls:
+                if control.object_type == 'selector' and control.is_selected:
                     has_selected = True
                     break
             if not has_selected:
-                for control in controls:
+                for control in selector_controls:
                     if control.is_default:
                         control.is_selected = True
                         break

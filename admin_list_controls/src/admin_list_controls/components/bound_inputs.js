@@ -10,7 +10,9 @@ export function BoundInputs() {
     const inputs = [];
     _.forEach(state.values, (values, name) => {
         values.forEach((value, i) => {
-            inputs.push(<input key={name + i} type="hidden" name={name} value={value} />);
+            if (value) {
+                inputs.push(<input key={name + i} type="hidden" name={name} value={value} />);
+            }
         });
     });
 

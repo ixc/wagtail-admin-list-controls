@@ -1,5 +1,5 @@
 import React from "react";
-import { store } from '../state';
+import {store} from '../state';
 import {ListControls} from "./list_controls";
 import {Button} from "./button";
 import {Panel} from "./panel";
@@ -8,6 +8,7 @@ import {Text} from "./text";
 import {Divider} from "./divider";
 import {Block} from "./block";
 import {Selector} from "./selector";
+import {TextFilter} from "./filters/text";
 
 export function Root() {
     const state = store.getState();
@@ -36,6 +37,19 @@ export function render_control(control) {
             return <Block key={control.component_id} control={control}/>;
         case 'selector':
             return <Selector key={control.component_id} control={control}/>;
+        case 'filter':
+            switch(control.filter_type) {
+                case 'text':
+                    return <TextFilter key={control.component_id} control={control} />;
+                case 'boolean':
+                case 'radio':
+                case 'choice':
+                case 'multiple_choice':
+                default:
+                    console.error('Unknown filter type', control.filter_type, control);
+                    throw new Error(`Unknown filter type "${control.filter_type}`);
+
+            }
         default:
             console.error('Unknown control type', control);
             throw new Error(`Unknown control ${control.object_type}`);

@@ -6,8 +6,7 @@ class BaseComponent:
     object_type = ''
     children = None
     can_have_children = True
-    _flattened_hierarchy = None
-    _added_children = False
+    _children_defined = False
 
     def __init__(self, style=None, extra_classes=None):
         self.style = self.get_default_style()
@@ -20,11 +19,11 @@ class BaseComponent:
         return self.set_children(*args)
 
     def set_children(self, *args):
-        if self._added_children:
+        if self._children_defined:
             raise ConfigurationError('Children have already been defined')
         if not self.can_have_children:
             raise ConfigurationError('%s cannot have children' % type(self))
-        self._added_children = True
+        self._children_defined = True
         self.children = []
         for child in args:
             if isinstance(child, str):

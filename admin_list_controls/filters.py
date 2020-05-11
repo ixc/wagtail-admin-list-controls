@@ -11,10 +11,7 @@ class BaseFilter(BaseComponent):
     def __init__(self, name, label=None, apply_to_queryset=None, default_value=None, **kwargs):
         super().__init__(**kwargs)
         self.name = name
-        if label:
-            self.label = label
-        else:
-            self.label = self.name
+        self.label = label
         self._apply_to_queryset = apply_to_queryset
         self.default_value = default_value
 

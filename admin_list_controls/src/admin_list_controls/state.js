@@ -59,6 +59,14 @@ function get_initial_state() {
         if (control.ref) {
             controls_by_ref[control.ref] = control;
         }
+        if (control.name) {
+            if (!(control.name in values)) {
+                values[control.name] = [];
+            }
+            if (control.value) {
+                values[control.name].push(control.value);
+            }
+        }
     });
 
     return _.assign(initial_state, {
