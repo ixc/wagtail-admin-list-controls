@@ -15,72 +15,78 @@ class ProductAdminIndexView(ListControlsIndexViewMixin, IndexView):
     def build_list_controls(self):
         return ListControls()(
             Button(action=[
-                TogglePanel(ref='some_panel_ref'),
-                ClosePanel(ref='some_other_panel_ref'),
+                TogglePanel(ref='panel_1'),
+                ClosePanel(ref='panel_2'),
             ])(
                 Icon('icon icon-search'),
-                Text('Some text component'),
-                'A raw string',
+                'Filters',
             ),
             Button(action=[
-                ClosePanel(ref='some_panel_ref'),
-                TogglePanel(ref='some_other_panel_ref'),
+                ClosePanel(ref='panel_1'),
+                TogglePanel(ref='panel_2'),
             ])(
-                'Second panel'
+                'Another panel'
             ),
             Block(style={'float': 'right'})(
                 Layout(value='grid')('Grid view'),
-                Layout(value='list', is_default=True)('List view'),
+                Layout(value='list', is_default=True, style={'margin-left': '5px'})(
+                    'List view'
+                ),
             ),
-            Panel(ref='some_panel_ref')(
-                Text('Text text', size=Text.MEDIUM),
+            Panel(ref='panel_1')(
+                Text('Filters', size=Text.LARGE, style={'font-weight': 'bold'}),
+                Spacer(),
                 TextFilter(
-                    name='some_text_filter',
-                    label='Some text filter',
+                    name='text_filter',
+                    label='A text filter',
                 ),
                 BooleanFilter(
-                    name='some_bool_filter',
-                    label='Some boolean filter',
+                    name='bool_filter',
+                    label='A boolean filter',
                 ),
+                Divider(),
+                Text('Another heading', size=Text.LARGE, style={'font-weight': 'bold'}),
+                Spacer(),
                 RadioFilter(
-                    name='some_radio_filter',
-                    label='Some radio filter',
+                    name='radio_filter',
+                    label='A radio filter',
                     choices=(
                         ('', 'Empty choice'),
-                        ('radio_choice_1', 'Test radio choice 1'),
-                        ('radio_choice_2', 'Test radio choice 2'),
-                        ('radio_choice_3', 'Test radio choice 3'),
-                        ('radio_choice_4', 'Test radio choice 4'),
-                        ('radio_choice_5', 'Test radio choice 5'),
-                        ('radio_choice_6', 'Test radio choice 6'),
-                        ('radio_choice_7', 'Test radio choice 7'),
-                        ('radio_choice_8', 'Test radio choice 8'),
+                        ('apple', 'Apple'),
+                        ('banana', 'Banana'),
+                        ('pear', 'Pear'),
+                        ('persimmon', 'Persimmon'),
+                        ('plum', 'Plum'),
                     ),
                     default_value='',
                 ),
                 ChoiceFilter(
-                    name='some_choice_filter',
-                    label='Some choice filter',
+                    name='choice_filter',
+                    label='A choice filter',
                     choices=(
-                        ('choice_1', 'Test choice 1'),
-                        ('choice_2', 'Test choice 2'),
-                        ('choice_3', 'Test choice 3'),
-                        ('choice_4', 'Test choice 4'),
-                        ('choice_5', 'Test choice 5'),
-                        ('choice_6', 'Test choice 6'),
-                        ('choice_7', 'Test choice 7'),
-                        ('choice_8', 'Test choice 8'),
+                        ('apple', 'Apple'),
+                        ('banana', 'Banana'),
+                        ('pear', 'Pear'),
+                        ('persimmon', 'Persimmon'),
+                        ('plum', 'Plum'),
+                    ),
+                ),
+                ChoiceFilter(
+                    name='multiple_choice_filter',
+                    label='A multiple choice filter',
+                    choices=(
+                        ('apple', 'Apple'),
+                        ('banana', 'Banana'),
+                        ('pear', 'Pear'),
+                        ('persimmon', 'Persimmon'),
+                        ('plum', 'Plum'),
                     ),
                     multiple=True,
                 ),
-                Divider(),
-                Text('Works large and bold text', size=Text.LARGE, style={'font-weight': 'bold'}),
                 Spacer(),
-                Text('medium text ', size=Text.MEDIUM),
-                Text('medium and 200 weight text', size=Text.MEDIUM),
                 Button(action=SubmitForm())('Apply filters'),
             ),
-            Panel(ref='some_other_panel_ref', collapsed=True)(
+            Panel(ref='panel_2', collapsed=True)(
                 Text('medium text ', size=Text.MEDIUM),
                 Text('large text', size=Text.LARGE),
             ),
