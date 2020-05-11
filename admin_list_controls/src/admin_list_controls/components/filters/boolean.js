@@ -1,29 +1,35 @@
-import React from "react";
-import { store, HANDLE_FIELD_CHANGE } from '../../state';
+import React, {useState} from "react";
+import {SET_VALUE} from '../../constants';
+import {store} from '../../state';
 
-export class BooleanField extends React.Component {
-    render() {
-        const { field } = this.props;
+export function BooleanField({control}) {
+    const [value, set_value] = useState(control.value);
 
-        const input_id = 'boolean-field-' + field.name;
-
-        return (
-            <div className="alc__field alc__field--boolean">
-                <label className="alc__filter__label" htmlFor={input_id}>{field.label}</label>
-                <div className="alc__filter__input-wrap">
-                    <input
-                        id={input_id}
-                        type="checkbox"
-                        className="alc__filter__input"
-                        checked={field.value}
-                        onChange={event => store.dispatch({
-                            type: HANDLE_FIELD_CHANGE,
-                            name: field.name,
+    const input_id = `alc__filter-${control.component_id}-${control.name}`;
+    return (
+        <div className="alc__filter alc__filter--boolean">
+            {control.label
+                ? <label className="alc__filter__label" htmlFor={input_id}>{control.label}</label>
+                : null
+            }
+            <div className="alc__filter__input-wrap">
+                <input
+                    id={input_id}
+                    type="checkbox"
+                    className="alc__filter__input"
+                    checked={value}
+                    onChange={event => {
+                        const value = event.target.checked;
+                        set_value(value);
+                        store.dispatch({
+                            type: SET_VALUE,
+                            name: control.name,
                             value: event.target.checked,
-                        })}
-                    />
-                </div>
+                        })
+                    }}
+                />
             </div>
-        );
-    }
+        </div>
+    );
 }
+

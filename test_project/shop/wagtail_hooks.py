@@ -40,6 +40,10 @@ class ProductAdminIndexView(ListControlsIndexViewMixin, IndexView):
                     name='some_text_filter',
                     label='Some text filter',
                 ),
+                BooleanFilter(
+                    name='some_bool_filter',
+                    label='Some boolean filter',
+                ),
                 Divider(),
                 Text('Works large and bold text', size=Text.LARGE, style={'font-weight': 'bold'}),
                 Spacer(),

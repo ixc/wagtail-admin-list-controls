@@ -59,13 +59,9 @@
 }
 
 .alc__filter {
-  margin-bottom: 15px;
-  display: inline-block;
-  vertical-align: top;
-}
-
-.alc__text + .alc__filter {
   display: block;
+  margin-bottom: 15px;
+  vertical-align: top;
 }
 
 .alc__filter__label {
