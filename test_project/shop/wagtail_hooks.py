@@ -71,6 +71,7 @@ class ProductAdminIndexView(ListControlsIndexViewMixin, IndexView):
                         ('choice_7', 'Test choice 7'),
                         ('choice_8', 'Test choice 8'),
                     ),
+                    multiple=True,
                 ),
                 Divider(),
                 Text('Works large and bold text', size=Text.LARGE, style={'font-weight': 'bold'}),

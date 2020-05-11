@@ -19,15 +19,15 @@ export function ChoiceFilter({control}) {
     // Safety checks to ensure the incoming value is white-listed by the back-end
     let initial_value;
     if (control.multiple) {
-        initial_value = _.filter(control.value, choice => value_to_choice[choice.value]);
+        initial_value = control.value.map(value => value_to_choice[value])
+            .filter(_ => _);
     } else {
         initial_value = value_to_choice[control.value];
     }
     const [value, set_value] = useState(initial_value);
 
     const input_id = `alc__filter-${control.component_id}-${control.name}`;
-    // console.log('select value', value, valid_choices[value])
-    // console.log('select choices', choices)
+
     return (
         <div className="alc__filter alc__filter--choice">
             {control.label

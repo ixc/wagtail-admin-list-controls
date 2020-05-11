@@ -28,7 +28,11 @@ function reducer(current_state=initial_state, action) {
                 state.collapsed_panels_by_ref[action.ref] = true;
                 return;
             case constants.SET_VALUE:
-                state.values[action.name] = [action.value];
+                if (_.isArray(action.value)) {
+                    state.values[action.name] = action.value;
+                } else {
+                    state.values[action.name] = [action.value];
+                }
                 return;
             case constants.REMOVE_VALUE:
                 if (action.name in state.values) {
