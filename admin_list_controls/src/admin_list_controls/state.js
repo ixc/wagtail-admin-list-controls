@@ -67,7 +67,17 @@ function get_initial_state() {
             if (!(control.name in values)) {
                 values[control.name] = [];
             }
-            if (control.value) {
+            if (_.isArray(control.value)) {
+                control.value.forEach(value => {
+                    if (value) {
+                        values[control.name].push(control.value);
+                    }
+                })
+            } else if ('is_selected' in control) {
+                if (control.is_selected) {
+                    values[control.name].push(control.value);
+                }
+            } else if (control.value) {
                 values[control.name].push(control.value);
             }
         }
