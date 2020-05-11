@@ -9,7 +9,8 @@ import {Divider} from "./divider";
 import {Block} from "./block";
 import {Selector} from "./selector";
 import {TextFilter} from "./filters/text";
-import {BooleanField} from "./filters/boolean";
+import {BooleanFilter} from "./filters/boolean";
+import {RadioFilter} from "./filters/radio";
 
 export function Root() {
     const state = store.getState();
@@ -43,8 +44,9 @@ export function render_control(control) {
                 case 'text':
                     return <TextFilter key={control.component_id} control={control} />;
                 case 'boolean':
-                    return <BooleanField key={control.component_id} control={control} />;
+                    return <BooleanFilter key={control.component_id} control={control} />;
                 case 'radio':
+                    return <RadioFilter key={control.component_id} control={control} />;
                 case 'choice':
                 case 'multiple_choice':
                 default:

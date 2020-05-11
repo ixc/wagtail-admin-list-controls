@@ -68,3 +68,24 @@
   display: block;
   width: 100%;
 }
+
+.alc__filter__radio-choice {
+  display: inline-block;
+  margin-bottom: 16px;
+}
+
+.alc__filter__radio-choice__label {
+  padding: 0;
+  float: none;
+  width: auto;
+  display: inline-block;
+  margin-right: 25px;
+}
+
+.alc__filter__radio-choice__text {
+  display: inline-block;
+  position: relative;
+  top: 2px;
+  padding-left: 5px;
+  font-weight: normal;
+}

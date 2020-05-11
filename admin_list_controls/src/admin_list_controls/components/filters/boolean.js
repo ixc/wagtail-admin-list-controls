@@ -2,7 +2,7 @@ import React, {useState} from "react";
 import {SET_VALUE} from '../../constants';
 import {store} from '../../state';
 
-export function BooleanField({control}) {
+export function BooleanFilter({control}) {
     const [value, set_value] = useState(control.value);
 
     const input_id = `alc__filter-${control.component_id}-${control.name}`;
