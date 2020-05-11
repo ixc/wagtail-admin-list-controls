@@ -78,30 +78,36 @@ class RadioFilter(BaseFilter):
 class ChoiceFilter(BaseFilter):
     filter_type = 'choice'
 
-    def __init__(self, choices, *args, **kwargs):
+    def __init__(self, choices, multiple=False, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
         self.choices = choices
+        self.multiple = multiple
 
     def clean(self, request):
         whitelisted_values = [choice[0] for choice in self.choices]
-        value = request.GET.get(self.name)
-        if value in whitelisted_values:
-            return value
+        if self.multiple:
+            values = request.GET.getlist(self.name)
+            cleaned_values = [
+                value for value in values
+                if value in whitelisted_values
+            ]
+            if cleaned_values:
+                return cleaned_values
+            elif self.default_value:
+                return [self.default_value]
+            else:
+                return []
+        else:
+            value = request.GET.get(self.name)
+            if value in whitelisted_values:
+                return value
+            elif self.default_value:
+                return self.default_value
+            return None
 
     def serialize(self):
         return dict(super().serialize(), **{
             'choices': self.choices,
+            'multiple': self.multiple,
         })
-
-
-class MultipleChoiceFilter(ChoiceFilter):
-    filter_type = 'multiple_choice'
-
-    def clean(self, request):
-        whitelisted_values = [choice[0] for choice in self.choices]
-        values = request.GET.getlist(self.name)
-        return [
-            value for value in values
-            if value in whitelisted_values
-        ]

@@ -1,51 +1,63 @@
-import React from "react";
+import React, {useState} from "react";
 import Select from 'react-select';
 import _ from 'lodash';
-import { store, HANDLE_FIELD_CHANGE } from '../../state';
+import {SET_VALUE} from '../../constants';
+import {store} from '../../state';
 
-export class ChoiceField extends React.Component {
-    render() {
-        const { field } = this.props;
+export function ChoiceFilter({control}) {
+    const choices = [];
+    const value_to_choice = Object.create(null);
+    _.forEach(control.choices, choice => {
+        const choice_obj = {
+            value: choice[0],
+            label: choice[1],
+        };
+        choices.push(choice_obj);
+        value_to_choice[choice[0]] = choice_obj;
+    });
 
-        let value;
-        if (field.value) {
-            if (field.multiple) {
-                const value_lookup = _.transform(field.value, (accum, value) => { accum[value] = true }, {});
-                value = _.filter(field.choices, choice => value_lookup[choice.value]);
-            } else {
-                value = _.find(field.choices, {value: field.value});
+    // Safety checks to ensure the incoming value is white-listed by the back-end
+    let initial_value;
+    if (control.multiple) {
+        initial_value = _.filter(control.value, choice => value_to_choice[choice.value]);
+    } else {
+        initial_value = value_to_choice[control.value];
+    }
+    const [value, set_value] = useState(initial_value);
+
+    const input_id = `alc__filter-${control.component_id}-${control.name}`;
+    // console.log('select value', value, valid_choices[value])
+    // console.log('select choices', choices)
+    return (
+        <div className="alc__filter alc__filter--choice">
+            {control.label
+                ? <label className="alc__filter__label" htmlFor={input_id}>{control.label}</label>
+                : null
             }
-        }
-
-        const htmlFor = `choice-field-${field.name}`;
-
-        return (
-            <div className="alc__field alc__field--choice">
-                <label className="alc__filter__label" htmlFor={htmlFor}>
-                    {field.label}
-                </label>
+            <div className="alc__filter__input-wrap">
                 <Select
-                    id={htmlFor}
+                    id={input_id}
                     className="alc__filter__input"
                     value={value}
-                    isMulti={field.multiple}
-                    isClearable={field.clearable}
+                    isMulti={control.multiple}
+                    options={choices}
+                    isClearable
                     onChange={selected => {
-                        let value;
-                        if (field.multiple) {
-                            value = _.map(selected, 'value');
+                        set_value(selected);
+                        let selected_value;
+                        if (control.multiple) {
+                            selected_value = control.multiple
+                                ? _.map(selected, 'value')
+                                : [selected.value];
                         } else if (selected) {
-                            value = selected.value;
-                        } else {
-                            value = selected;
+                            selected_value = selected.value;
                         }
                         store.dispatch({
-                            type: HANDLE_FIELD_CHANGE,
-                            name: field.name,
-                            value: value,
-                        })
+                            type: SET_VALUE,
+                            name: control.name,
+                            value: selected_value,
+                        });
                     }}
-                    options={field.choices}
                     theme={theme => ({
                       ...theme,
                       colors: {
@@ -55,6 +67,6 @@ export class ChoiceField extends React.Component {
                     })}
                 />
             </div>
-        );
-    }
+        </div>
+    );
 }

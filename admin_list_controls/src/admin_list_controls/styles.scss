@@ -64,9 +64,14 @@
   vertical-align: top;
 }
 
+.alc__text + .alc__filter {
+  margin-top: 15px;
+}
+
 .alc__filter__label {
   display: block;
   width: 100%;
+  padding-top: 0;
 }
 
 .alc__filter__radio-choice {

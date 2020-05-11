@@ -11,6 +11,7 @@ import {Selector} from "./selector";
 import {TextFilter} from "./filters/text";
 import {BooleanFilter} from "./filters/boolean";
 import {RadioFilter} from "./filters/radio";
+import {ChoiceFilter} from "./filters/choice";
 
 export function Root() {
     const state = store.getState();
@@ -48,7 +49,7 @@ export function render_control(control) {
                 case 'radio':
                     return <RadioFilter key={control.component_id} control={control} />;
                 case 'choice':
-                case 'multiple_choice':
+                    return <ChoiceFilter key={control.component_id} control={control} />;
                 default:
                     console.error('Unknown filter type', control.filter_type, control);
                     throw new Error(`Unknown filter type "${control.filter_type}`);
