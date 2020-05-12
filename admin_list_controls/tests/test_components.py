@@ -1,180 +1,173 @@
-from django.test import TestCase
-from admin_list_controls.components import ListControls, Block, Row, Column, Divider, Panel, \
-    Icon, Text, Button, Html
+from admin_list_controls.components import ListControls, Block, Spacer, Columns, Divider, Panel, \
+    Icon, Text, Button, Summary
+from admin_list_controls.tests.utils import BaseTestCase
 
 
-class TestComponents(TestCase):
+class TestComponents(BaseTestCase):
     def test_list_controls_component(self):
-        self.assertEqual(
-            ListControls().serialize(),
+        self.assertObjectSerializesTo(
+            ListControls(),
             {
                 'object_type': 'list_controls',
                 'children': None,
                 'style': None,
             },
         )
-        self.assertEqual(
-            ListControls()(ListControls()).serialize(),
+        serialized = ListControls().serialize()
+        self.assertEqual(serialized['extra_classes'], None)
+        self.assertIn('ListControls', serialized['component_id'])
+        nested = ListControls()
+        self.assertObjectSerializesTo(
+            ListControls()(nested),
             {
                 'object_type': 'list_controls',
-                'children': [{
-                    'object_type': 'list_controls',
-                    'children': None,
-                    'style': None,
-                }],
-                'style': None,
+                'children': [nested.serialize()],
             },
         )
 
     def test_block_component(self):
-        self.assertEqual(
-            Block().serialize(),
+        self.assertObjectSerializesTo(
+            Block(),
             {
                 'object_type': 'block',
-                'children': None,
-                'style': None,
             },
         )
 
-    def test_row_component(self):
-        self.assertEqual(
-            Row().serialize(),
+    def test_spacer_component(self):
+        self.assertObjectSerializesTo(
+            Spacer(),
             {
-                'object_type': 'row',
-                'children': None,
-                'style': None,
+                'object_type': 'block',
+                'style': {'paddingTop': '20px'},
             },
         )
 
-    def test_column_component(self):
-        self.assertEqual(
-            Column(width=Column.HALF_WIDTH).serialize(),
-            {
-                'object_type': 'column',
-                'children': None,
-                'width': 'half_width',
-                'style': None,
-            },
+    def test_columns_component(self):
+        component = Columns()(
+            [Text('Column 1')],
+            ['Column 2'],
         )
-        self.assertEqual(
-            Column(width=Column.QUARTER_WIDTH).serialize(),
+        component.prepare_children()
+        serialized = component.serialize()
+        self.assertEqual(serialized['object_type'], 'columns')
+        self.assertEqual(len(serialized['children']), 2)
+        self.assertDictContainsSubset(
             {
-                'object_type': 'column',
-                'children': None,
-                'width': 'quarter_width',
-                'style': None,
+                'object_type': 'block',
+                'style': {
+                    'width': 'calc((100% - ((2 - 1) * 10px)) / 2)',
+                    'float': 'left',
+                    'marginLeft': '0',
+                },
             },
+            serialized['children'][0],
         )
-        self.assertEqual(
-            Column(width=Column.FULL_WIDTH).serialize(),
+        self.assertDictContainsSubset(
             {
-                'object_type': 'column',
-                'children': None,
-                'width': 'full_width',
-                'style': None,
+                'object_type': 'text',
+                'content': 'Column 1',
             },
+            serialized['children'][0]['children'][0],
+        )
+        self.assertDictContainsSubset(
+            {
+                'object_type': 'block',
+                'style': {
+                    'width': 'calc((100% - ((2 - 1) * 10px)) / 2)',
+                    'float': 'left',
+                    'marginLeft': '10px',
+                },
+            },
+            serialized['children'][1],
+        )
+        self.assertDictContainsSubset(
+            {
+                'object_type': 'text',
+                'content': 'Column 2',
+            },
+            serialized['children'][1]['children'][0],
         )
 
     def test_divider_component(self):
-        self.assertEqual(
-            Divider().serialize(),
+        self.assertObjectSerializesTo(
+            Divider(),
             {
                 'object_type': 'divider',
-                'children': None,
-                'style': None,
             },
         )
 
     def test_panel_component(self):
-        self.assertEqual(
-            Panel().serialize(),
+        self.assertObjectSerializesTo(
+            Panel(),
             {
                 'object_type': 'panel',
-                'children': None,
                 'collapsed': False,
-                'style': None,
             },
         )
-        self.assertEqual(
-            Panel(collapsed=True).serialize(),
+        self.assertObjectSerializesTo(
+            Panel(collapsed=True),
             {
                 'object_type': 'panel',
-                'children': None,
                 'collapsed': True,
-                'style': None,
             },
         )
-        self.assertEqual(
-            Panel(collapsed=False).serialize(),
+        self.assertObjectSerializesTo(
+            Panel(collapsed=False),
             {
                 'object_type': 'panel',
-                'children': None,
                 'collapsed': False,
-                'style': None,
             },
         )
 
     def test_icon_component(self):
-        self.assertEqual(
-            Icon(classes='test_class_name').serialize(),
+        self.assertObjectSerializesTo(
+            Icon(classes='test_class_name'),
             {
                 'object_type': 'icon',
-                'children': None,
-                'classes': 'test_class_name',
-                'style': None,
+                'extra_classes': 'test_class_name',
             },
         )
 
     def test_text_component(self):
-        self.assertEqual(
-            Text('').serialize(),
+        self.assertObjectSerializesTo(
+            Text(''),
             {
                 'object_type': 'text',
-                'children': None,
                 'content': '',
                 'size': 'medium',
-                'style': None,
             },
         )
-        self.assertEqual(
-            Text('test').serialize(),
+        self.assertObjectSerializesTo(
+            Text('test'),
             {
                 'object_type': 'text',
-                'children': None,
                 'content': 'test',
                 'size': 'medium',
-                'style': None,
             },
         )
-        self.assertEqual(
-            Text('test', size=Text.MEDIUM).serialize(),
+        self.assertObjectSerializesTo(
+            Text('test', size=Text.MEDIUM),
             {
                 'object_type': 'text',
-                'children': None,
                 'content': 'test',
                 'size': 'medium',
-                'style': None,
             },
         )
-        self.assertEqual(
-            Text('test', size=Text.LARGE).serialize(),
+        self.assertObjectSerializesTo(
+            Text('test', size=Text.LARGE),
             {
                 'object_type': 'text',
-                'children': None,
                 'content': 'test',
                 'size': 'large',
-                'style': None,
             },
         )
 
     def test_button_component(self):
-        self.assertEqual(
-            Button().serialize(),
+        self.assertObjectSerializesTo(
+            Button(),
             {
                 'object_type': 'button',
-                'children': None,
                 'action': [],
-                'style': None,
             },
         )
 
@@ -182,82 +175,38 @@ class TestComponents(TestCase):
             def serialize(self):
                 return 'serialized_fake_action'
 
-        self.assertEqual(
-            Button(action=FakeAction()).serialize(),
+        self.assertObjectSerializesTo(
+            Button(action=FakeAction()),
             {
                 'object_type': 'button',
-                'children': None,
                 'action': ['serialized_fake_action'],
-                'style': None,
             },
         )
 
-        self.assertEqual(
-            Button(action=[FakeAction(), FakeAction()]).serialize(),
+        self.assertObjectSerializesTo(
+            Button(action=[FakeAction(), FakeAction()]),
             {
                 'object_type': 'button',
-                'children': None,
                 'action': ['serialized_fake_action', 'serialized_fake_action'],
-                'style': None,
             },
         )
 
-    def test_html_component(self):
-        self.assertEqual(
-            Html('test_content').serialize(),
+    def test_string_children_are_converted_to_text_components(self):
+        serialized = ListControls()(
+            'test string 1',
+            'test string 2'
+        ).serialize()
+        self.assertDictContainsSubset(
             {
-                'object_type': 'html',
-                'children': None,
-                'content': 'test_content',
-                'style': None,
+                'object_type': 'text',
+                'content': 'test string 1',
             },
+            serialized['children'][0],
         )
-
-    def test_nested_serialization(self):
-        self.assertEqual(
-            ListControls()(
-                ListControls()(
-                    ListControls(),
-                ),
-                ListControls()(
-                    ListControls(),
-                ),
-            ).serialize(),
+        self.assertDictContainsSubset(
             {
-                'object_type': 'list_controls',
-                'children': [{
-                    'object_type': 'list_controls',
-                    'children': [{
-                        'object_type': 'list_controls',
-                        'children': None,
-                        'style': None,
-                    }],
-                    'style': None,
-                }, {
-                    'object_type': 'list_controls',
-                    'children': [{
-                        'object_type': 'list_controls',
-                        'children': None,
-                        'style': None,
-                    }],
-                    'style': None,
-                }],
-                'style': None,
-            }
-        )
-
-    def test_string_children_are_converted_to_text(self):
-        self.assertEqual(
-            ListControls()(
-                'test string 1',
-                'test string 2'
-            ).serialize(),
-            {
-                'object_type': 'list_controls',
-                'children': [
-                    Text(content='test string 1').serialize(),
-                    Text(content='test string 2').serialize(),
-                ],
-                'style': None,
-            }
+                'object_type': 'text',
+                'content': 'test string 2',
+            },
+            serialized['children'][1],
         )

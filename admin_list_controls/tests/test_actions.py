@@ -1,8 +1,9 @@
 from django.test import TestCase
 from admin_list_controls.actions import BaseAction, SetValue, SubmitForm, TogglePanel, Link
+from admin_list_controls.tests.utils import BaseTestCase
 
 
-class TestActions(TestCase):
+class TestActions(BaseTestCase):
     def test_base_action(self):
         self.assertEqual(
             BaseAction().serialize(),
