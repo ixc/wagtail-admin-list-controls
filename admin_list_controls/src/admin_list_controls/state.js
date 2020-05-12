@@ -39,6 +39,9 @@ function reducer(current_state=initial_state, action) {
                     state.values[action.name] = _.pull(state.values[action.name], action.value);
                 }
                 return;
+            case constants.REMOVE_ALL_VALUES:
+                state.values = Object.create(null);
+                return;
             case constants.SUBMIT_FORM:
                 submit_form();
                 return;

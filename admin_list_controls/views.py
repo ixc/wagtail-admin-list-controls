@@ -35,7 +35,7 @@ class ListControlsIndexViewMixin:
         return self._built_list_controls
 
     def get_selected_list_control_layout(self):
-        for obj in self.get_list_controls().flatten_hierarchy():
+        for obj in self.get_list_controls().flatten_tree():
             if obj.object_type == Layout.object_type and obj.is_selected:
                 return obj
 
@@ -49,7 +49,7 @@ class ListControlsIndexViewMixin:
         """
         params = super().get_filters_params(params)
 
-        for obj in self.get_list_controls().flatten_hierarchy():
+        for obj in self.get_list_controls().flatten_tree():
             name = getattr(obj, 'name', None)
             if name and name in params:
                 del params[name]
@@ -100,8 +100,10 @@ class ListControlsIndexViewMixin:
             return
         self._has_prepared_list_controls = True
 
+        list_controls = self.get_list_controls()
+
         controls_by_name = {}
-        for obj in self.get_list_controls().flatten_hierarchy():
+        for obj in list_controls.flatten_tree():
             # Allow objects
             if hasattr(obj, 'handle_request'):
                 obj.handle_request(self.request)
@@ -130,9 +132,16 @@ class ListControlsIndexViewMixin:
                         break
 
         # Some objects wrap their children in other components
-        for obj in self.get_list_controls().flatten_hierarchy():
+        for obj in list_controls.flatten_tree():
             if hasattr(obj, 'prepare_children'):
                 obj.prepare_children()
+
+        # Some objects are derived from the final state of the tree
+
+        flattened_tree = list_controls.flatten_tree()
+        for obj in flattened_tree:
+            if hasattr(obj, 'derive_from_components'):
+                obj.derive_from_components(flattened_tree)
 
 
 class ListControlsIndexView(ListControlsIndexViewMixin, IndexView):

@@ -1,5 +1,5 @@
 from .actions import SetValue, RemoveValue, SubmitForm
-from .components import BaseComponent, Button
+from .components import BaseComponent, Button, Text
 
 
 class BaseSelector(BaseComponent):
@@ -7,13 +7,17 @@ class BaseSelector(BaseComponent):
     selector_type = ''
     name = None
     cleaned_value = None
+    summary_label = None
+    summary_value = None
 
-    def __init__(self, name, value, is_default=False, **kwargs):
+    def __init__(self, name, value, is_default=False, summary_label=None, summary_value=None, **kwargs):
         super().__init__(**kwargs)
         self.value = value
         self.is_default = is_default
         self.name = name
         self.is_selected = False
+        self.summary_label = summary_label
+        self.summary_value = summary_value
 
     def handle_request(self, request):
         self.cleaned_value = self.clean(request)
@@ -50,11 +54,53 @@ class BaseSelector(BaseComponent):
             ),
         ]
 
+    def serialize_summary(self):
+        if self.is_selected and not self.is_default:
+            label = self.summary_label
+            if not label:
+                label = self.name.title()
+
+            value = self.summary_value
+            if value is None:
+                value = ''
+                for component in self.flatten_tree():
+                    if isinstance(component, str):
+                        value += component + ' '
+                    elif isinstance(component, Text):
+                        value += component.content + ' '
+                value = value.strip()
+
+            return {
+                'name': self.name,
+                'label': label,
+                'value': value,
+                'action': [
+                    RemoveValue(name=self.name, value=self.cleaned_value).serialize(),
+                    SubmitForm().serialize(),
+                ],
+            }
+
 
 class Layout(BaseSelector):
     selector_type = 'layout'
 
-    def __init__(self, value, template=None, is_default=False, name='layout', **kwargs):
-        super().__init__(name=name, value=value, is_default=is_default, **kwargs)
+    def __init__(
+        self,
+        value,
+        template=None,
+        is_default=False,
+        name='layout',
+        summary_label='Layout',
+        summary_value=None,
+        **kwargs,
+    ):
+        super().__init__(
+            name=name,
+            value=value,
+            is_default=is_default,
+            summary_label=summary_label,
+            summary_value=summary_value,
+            **kwargs,
+        )
 
         self.template = template

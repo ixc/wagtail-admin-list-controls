@@ -4,7 +4,7 @@ from wagtail.contrib.modeladmin.views import IndexView
 from admin_list_controls.selectors import Layout
 from admin_list_controls.views import ListControlsIndexViewMixin
 from admin_list_controls.components import ListControls, Button, Icon, Text, Panel, Divider, Block, Spacer, \
-    Columns
+    Columns, Summary
 from admin_list_controls.actions import TogglePanel, ClosePanel, SubmitForm
 from admin_list_controls.filters import TextFilter, ChoiceFilter, RadioFilter, BooleanFilter
 from .models import Product
@@ -94,6 +94,7 @@ class ProductAdminIndexView(ListControlsIndexViewMixin, IndexView):
                 Text('medium text ', size=Text.MEDIUM),
                 Text('large text', size=Text.LARGE),
             ),
+            Summary(),
         )
 
 

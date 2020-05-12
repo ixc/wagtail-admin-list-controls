@@ -13,6 +13,7 @@ import {BooleanFilter} from "./filters/boolean";
 import {RadioFilter} from "./filters/radio";
 import {ChoiceFilter} from "./filters/choice";
 import {Columns} from "./columns";
+import {Summary} from "./summary";
 
 export function Root() {
     const state = store.getState();
@@ -43,6 +44,8 @@ export function render_control(control) {
             return <Selector key={control.component_id} control={control}/>;
         case 'columns':
             return <Columns key={control.component_id} control={control}/>;
+        case 'summary':
+            return <Summary key={control.component_id} control={control}/>;
         case 'filter':
             switch(control.filter_type) {
                 case 'text':

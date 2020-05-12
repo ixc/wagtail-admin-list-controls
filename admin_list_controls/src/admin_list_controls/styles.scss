@@ -121,3 +121,52 @@
 .alc__selector + .alc__selector {
   margin-left: 1em;
 }
+
+.alc__summary {
+  margin: 20px 0 10px 0;
+}
+
+.alc__summary__detail {
+  display: inline-block;
+  margin-right: 10px;
+}
+
+.alc__summary__detail__button {
+  padding: 5px 10px;
+  border-radius: 3px;
+  border: 1px solid rgba(0, 0, 0, .35);
+  background: transparent;
+  color: white;
+  font-size: 13px;
+}
+
+.alc__summary__detail__button:hover,
+.alc__summary__detail__button:active,
+.alc__summary__detail__button:focus {
+  background-color: #00676a;
+}
+
+.alc__summary__detail__icon {
+  position: relative;
+  top: -1px;
+  left: 4px;
+}
+
+.alc__summary__reset {
+  display: inline-block;
+}
+
+.alc__summary__reset__button {
+  padding: 5px 10px;
+  border-radius: 3px;
+  border: 1px solid rgba(0, 0, 0, .35);
+  background: #00676a;
+  color: white;
+  font-size: 13px;
+}
+
+.alc__summary__reset__icon {
+  position: relative;
+  top: -1px;
+  left: 4px;
+}

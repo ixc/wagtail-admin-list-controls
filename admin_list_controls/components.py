@@ -69,16 +69,16 @@ class BaseComponent:
     def get_default_style(self):
         return {}
 
-    def flatten_hierarchy(self):
-        hierarchy = [self]
+    def flatten_tree(self):
+        components = [self]
         if self.children:
             for child in self.children:
                 if isinstance(child, Iterable):
                     for nested_child in child:
-                        hierarchy += nested_child.flatten_hierarchy()
+                        components += nested_child.flatten_tree()
                 else:
-                    hierarchy += child.flatten_hierarchy()
-        return hierarchy
+                    components += child.flatten_tree()
+        return components
 
 
 class ListControls(BaseComponent):
@@ -190,20 +190,29 @@ class Button(BaseComponent):
         })
 
 
-class Html(BaseComponent):
-    object_type = 'html'
-    can_have_children = False
+class Summary(BaseComponent):
+    object_type = 'summary'
 
-    def __init__(self, content, **kwargs):
+    def __init__(self, overrides=None, reset_label='Reset all', **kwargs):
         super().__init__(**kwargs)
-        self.content = content
+        self.overrides = overrides
+        # TODO: remove
+        if overrides:
+            raise NotImplementedError()
+        self.reset_label = reset_label
+        self.summary = []
+
+    def derive_from_components(self, components):
+        for component in components:
+            if hasattr(component, 'serialize_summary'):
+                summary = component.serialize_summary()
+                if summary:
+                    self.summary.append(summary)
 
     def serialize(self):
         return dict(super().serialize(), **{
-            'content': self.content,
+            'summary': self.summary,
+            'reset_label': self.reset_label,
         })
-
-
-
 
 

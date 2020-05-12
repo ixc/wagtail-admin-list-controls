@@ -3,3 +3,4 @@ export const CLOSE_PANEL = 'CLOSE_PANEL';
 export const SET_VALUE = 'SET_VALUE';
 export const SUBMIT_FORM = 'SUBMIT_FORM';
 export const REMOVE_VALUE = 'REMOVE_VALUE';
+export const REMOVE_ALL_VALUES = 'REMOVE_ALL_VALUES';

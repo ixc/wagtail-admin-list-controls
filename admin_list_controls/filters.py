@@ -1,4 +1,5 @@
 from .components import BaseComponent
+from .actions import RemoveValue, SubmitForm
 
 
 class BaseFilter(BaseComponent):
@@ -27,6 +28,18 @@ class BaseFilter(BaseComponent):
         if self._apply_to_queryset:
             return self._apply_to_queryset(queryset, self.cleaned_value)
         return super().apply_to_queryset(queryset)
+
+    def serialize_summary(self):
+        if self.cleaned_value:
+            return {
+                'name': self.name,
+                'label': self.label,
+                'value': self.cleaned_value,
+                'action': [
+                    RemoveValue(name=self.name, value=self.cleaned_value).serialize(),
+                    SubmitForm().serialize(),
+                ],
+            }
 
     def serialize(self):
         return dict(super().serialize(), **{
