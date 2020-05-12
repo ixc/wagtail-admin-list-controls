@@ -73,7 +73,11 @@ class BaseComponent:
         hierarchy = [self]
         if self.children:
             for child in self.children:
-                hierarchy += child.flatten_hierarchy()
+                if isinstance(child, Iterable):
+                    for nested_child in child:
+                        hierarchy += nested_child.flatten_hierarchy()
+                else:
+                    hierarchy += child.flatten_hierarchy()
         return hierarchy
 
 
@@ -90,25 +94,29 @@ class Spacer(Block):
         return {'padding-top': '20px'}
 
 
-class Row(BaseComponent):
-    object_type = 'row'
+class Columns(BaseComponent):
+    object_type = 'columns'
 
+    def prepare_children(self):
+        self._original_children = self.children
 
-class Column(BaseComponent):
-    object_type = 'column'
+        column_count = len(self.children)
+        gutter_width = '10px'
+        column_width = 'calc((100% - (({cc} - 1) * {gw})) / {cc})'.format(
+            cc=column_count,
+            gw=gutter_width,
 
-    QUARTER_WIDTH = 'quarter_width'
-    HALF_WIDTH = 'half_width'
-    FULL_WIDTH = 'full_width'
-
-    def __init__(self, width, **kwargs):
-        super().__init__(**kwargs)
-        self.width = width
-
-    def serialize(self):
-        return dict(super().serialize(), **{
-            'width': self.width,
-        })
+        )
+        self.children = []
+        for i, column_children in enumerate(self._original_children):
+            style = {
+                'width': column_width,
+                'float': 'left',
+                'margin-left': gutter_width if i > 0 else '0',
+            }
+            self.children.append(
+                Block(style)(*column_children),
+            )
 
 
 class Divider(BaseComponent):

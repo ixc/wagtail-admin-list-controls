@@ -12,6 +12,7 @@ import {TextFilter} from "./filters/text";
 import {BooleanFilter} from "./filters/boolean";
 import {RadioFilter} from "./filters/radio";
 import {ChoiceFilter} from "./filters/choice";
+import {Columns} from "./columns";
 
 export function Root() {
     const state = store.getState();
@@ -40,6 +41,8 @@ export function render_control(control) {
             return <Block key={control.component_id} control={control}/>;
         case 'selector':
             return <Selector key={control.component_id} control={control}/>;
+        case 'columns':
+            return <Columns key={control.component_id} control={control}/>;
         case 'filter':
             switch(control.filter_type) {
                 case 'text':

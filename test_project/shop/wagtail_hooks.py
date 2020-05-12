@@ -3,7 +3,8 @@ from wagtail.contrib.modeladmin.views import IndexView
 
 from admin_list_controls.selectors import Layout
 from admin_list_controls.views import ListControlsIndexViewMixin
-from admin_list_controls.components import ListControls, Button, Icon, Text, Panel, Divider, Block, Spacer
+from admin_list_controls.components import ListControls, Button, Icon, Text, Panel, Divider, Block, Spacer, \
+    Columns
 from admin_list_controls.actions import TogglePanel, ClosePanel, SubmitForm
 from admin_list_controls.filters import TextFilter, ChoiceFilter, RadioFilter, BooleanFilter
 from .models import Product
@@ -36,14 +37,17 @@ class ProductAdminIndexView(ListControlsIndexViewMixin, IndexView):
             Panel(ref='panel_1')(
                 Text('Filters', size=Text.LARGE, style={'font-weight': 'bold'}),
                 Spacer(),
-                TextFilter(
-                    name='text_filter',
-                    label='A text filter',
-                ),
-                BooleanFilter(
-                    name='bool_filter',
-                    label='A boolean filter',
-                ),
+                Columns()([
+                    TextFilter(
+                        name='text_filter',
+                        label='A text filter',
+                    ),
+                ], [
+                    BooleanFilter(
+                        name='bool_filter',
+                        label='A boolean filter',
+                    ),
+                ]),
                 Divider(),
                 Text('Another heading', size=Text.LARGE, style={'font-weight': 'bold'}),
                 Spacer(),

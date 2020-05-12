@@ -71,7 +71,16 @@
 .alc__filter__label {
   display: block;
   width: 100%;
-  padding-top: 0;
+  padding: 0;
+  float: none;
+}
+
+.alc__filter--text .alc__filter__input {
+  padding: .4em 1em;
+}
+
+.alc__filter--radio .alc__filter__input-wrap {
+  padding-top: 10px;
 }
 
 .alc__filter__radio-choice {
@@ -93,6 +102,14 @@
   top: 2px;
   padding-left: 5px;
   font-weight: normal;
+}
+
+.alc__filter--boolean .alc__filter__input-wrap {
+  margin-top: 10px;
+}
+
+.alc__filter--choice .alc__filter__input-wrap {
+  padding-top: 5px;
 }
 
 .alc__selector {
