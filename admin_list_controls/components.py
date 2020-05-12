@@ -1,4 +1,5 @@
 from collections.abc import Iterable
+from django.utils.translation import gettext as _
 from .exceptions import ConfigurationError
 
 
@@ -193,7 +194,7 @@ class Button(BaseComponent):
 class Summary(BaseComponent):
     object_type = 'summary'
 
-    def __init__(self, overrides=None, reset_label='Reset all', **kwargs):
+    def __init__(self, overrides=None, reset_label=_('Reset all'), **kwargs):
         super().__init__(**kwargs)
         self.overrides = overrides
         # TODO: remove

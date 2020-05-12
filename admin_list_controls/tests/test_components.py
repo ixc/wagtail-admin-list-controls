@@ -191,6 +191,16 @@ class TestComponents(BaseTestCase):
             },
         )
 
+    def test_summary_component(self):
+        self.assertObjectSerializesTo(
+            Summary(),
+            {
+                'object_type': 'summary',
+                'summary': [],
+                'reset_label': 'Reset all',
+            },
+        )
+
     def test_string_children_are_converted_to_text_components(self):
         serialized = ListControls()(
             'test string 1',
