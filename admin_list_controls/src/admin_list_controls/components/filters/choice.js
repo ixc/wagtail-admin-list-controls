@@ -27,7 +27,7 @@ export function ChoiceFilter({control}) {
     }
     const [value, set_value] = useState(initial_value);
 
-    const input_id = `alc__filter-${control.component_id}-${control.name}`;
+    const select_ref = React.createRef();
 
     return (
         <div
@@ -35,17 +35,22 @@ export function ChoiceFilter({control}) {
             style={control.style}
         >
             {control.label
-                ? <label className="alc__filter__label" htmlFor={input_id}>{control.label}</label>
+                ? (
+                    <label
+                        className="alc__filter__label"
+                        onClick={() => select_ref.current.focus()}
+                    >{control.label}</label>
+                )
                 : null
             }
             <div className="alc__filter__input-wrap">
                 <Select
-                    id={input_id}
                     className="alc__filter__input"
                     value={value}
                     isMulti={control.multiple}
                     options={choices}
                     isClearable
+                    ref={select_ref}
                     onChange={selected => {
                         set_value(selected);
                         let selected_value;
