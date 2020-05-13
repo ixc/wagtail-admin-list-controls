@@ -5,7 +5,7 @@ from admin_list_controls.selectors import Layout
 from admin_list_controls.views import ListControlsIndexViewMixin
 from admin_list_controls.components import ListControls, Button, Icon, Text, Panel, Divider, Block, Spacer, \
     Columns, Summary
-from admin_list_controls.actions import TogglePanel, ClosePanel, SubmitForm
+from admin_list_controls.actions import TogglePanel, ClosePanel, SubmitForm, Link
 from admin_list_controls.filters import TextFilter, ChoiceFilter, RadioFilter, BooleanFilter
 from .models import Product
 
@@ -27,6 +27,10 @@ class ProductAdminIndexView(ListControlsIndexViewMixin, IndexView):
                 TogglePanel(ref='panel_2'),
             ])(
                 'Another panel'
+            ),
+            Button(action=Link('/some/url'))(
+                Icon('icon icon-download'),
+                'Export'
             ),
             Block(style={'float': 'right'})(
                 Layout(value='grid')('Grid view'),

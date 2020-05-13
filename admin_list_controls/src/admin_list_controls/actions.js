@@ -32,7 +32,11 @@ export function create_action(action) {
             return {
                 type: constants.CLEAR_SEARCH_INPUT,
             };
-        case 'link': // TODO
+        case 'link':
+            return {
+                type: constants.LINK,
+                url: action.url,
+            };
         default:
             console.error('Unknown action type', action);
             throw new Error(`Unknown action ${action.action_type}`);

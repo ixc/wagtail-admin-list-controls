@@ -48,6 +48,9 @@ function reducer(current_state=initial_state, action) {
             case constants.CLEAR_SEARCH_INPUT:
                 clear_search_input();
                 return;
+            case constants.LINK:
+                window.location = action.url;
+                return;
             default:
                 break;
         }
