@@ -31,6 +31,7 @@ class BaseSelector(BaseComponent):
             'selector_type': self.selector_type,
             'name': self.name,
             'value': self.value,
+            'is_default': self.is_default,
             'is_selected': self.is_selected,
         })
 

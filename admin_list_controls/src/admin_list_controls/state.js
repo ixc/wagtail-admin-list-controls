@@ -80,7 +80,7 @@ function get_initial_state() {
                     }
                 })
             } else if ('is_selected' in control) {
-                if (control.is_selected) {
+                if (control.is_selected && !control.is_default) {
                     values[control.name].push(control.value);
                 }
             } else if (control.value) {
