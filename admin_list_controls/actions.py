@@ -23,20 +23,6 @@ class SetValue(BaseAction):
         })
 
 
-class AppendValue(BaseAction):
-    action_type = 'append_value'
-
-    def __init__(self, name, value):
-        self.name = name
-        self.value = value
-
-    def serialize(self):
-        return dict(super().serialize(), **{
-            'name': self.name,
-            'value': self.value,
-        })
-
-
 class RemoveValue(BaseAction):
     action_type = 'remove_value'
 
@@ -87,6 +73,10 @@ class ClosePanel(BaseAction):
         return dict(super().serialize(), **{
             'ref': self.ref,
         })
+
+
+class ClearSearchInput(BaseAction):
+    action_type = 'clear_search_input'
 
 
 class SubmitForm(BaseAction):

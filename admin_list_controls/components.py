@@ -1,5 +1,7 @@
 from collections.abc import Iterable
 from django.utils.translation import gettext as _
+
+from .actions import SubmitForm, ClearSearchInput
 from .exceptions import ConfigurationError
 
 
@@ -194,7 +196,16 @@ class Button(BaseComponent):
 class Summary(BaseComponent):
     object_type = 'summary'
 
-    def __init__(self, overrides=None, reset_label=_('Reset all'), **kwargs):
+    def __init__(
+        self,
+        overrides=None,
+        reset_label=_('Reset all'),
+        include_search_query=True,
+        search_query_name='q',
+        search_query_label=_('Search'),
+        search_query_value=None,
+        **kwargs
+    ):
         super().__init__(**kwargs)
         self.overrides = overrides
         # TODO: remove
@@ -202,8 +213,28 @@ class Summary(BaseComponent):
             raise NotImplementedError()
         self.reset_label = reset_label
         self.summary = []
+        self.include_search_query = include_search_query
+        self.search_query_name = search_query_name
+        self.search_query_label = search_query_label
+        self.search_query_value = search_query_value
+
+    def handle_request(self, request):
+        if self.include_search_query:
+            self.search_query_value = request.GET.get(self.search_query_name)
 
     def derive_from_components(self, components):
+        # Include the content of the built-in search field
+        if self.include_search_query and self.search_query_value:
+            self.summary.append({
+                'name': self.search_query_name,
+                'label': self.search_query_label,
+                'value': self.search_query_value,
+                'action': [
+                    ClearSearchInput().serialize(),
+                    SubmitForm().serialize(),
+                ]
+            })
+
         for component in components:
             if hasattr(component, 'serialize_summary'):
                 summary = component.serialize_summary()

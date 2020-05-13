@@ -54,7 +54,7 @@ export function Summary({control}) {
                     </div>
                 );
             })}
-            {control.reset_label
+            {control.reset_label && control.summary.length > 1
                 ? (
                     <div className="alc__summary__reset">
                         <button

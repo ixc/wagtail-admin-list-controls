@@ -9,7 +9,10 @@ const ui_root = document.createElement('span');
 const input_root = document.createElement('span');
 
 let form;
+let search_input;
 $(() => {
+    search_input = document.getElementById('id_q');
+
     const page_header = document.getElementsByTagName('header')[0];
     page_header.parentNode.insertBefore(ui_root, page_header.nextSibling);
 
@@ -40,4 +43,10 @@ export function submit_form() {
     mount(() => {
         form.submit();
     });
+}
+
+export function clear_search_input() {
+    if (search_input) {
+        search_input.value = '';
+    }
 }

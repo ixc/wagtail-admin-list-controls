@@ -34,7 +34,7 @@ class ProductAdminIndexView(ListControlsIndexViewMixin, IndexView):
                     'List view'
                 ),
             ),
-            Panel(ref='panel_1')(
+            Panel(ref='panel_1', collapsed=True)(
                 Text('Filters', size=Text.LARGE, style={'font-weight': 'bold'}),
                 Spacer(),
                 Columns()([
@@ -102,3 +102,4 @@ class ProductAdminIndexView(ListControlsIndexViewMixin, IndexView):
 class ProductAdmin(ModelAdmin):
     model = Product
     index_view_class = ProductAdminIndexView
+    search_fields = ('name',)

@@ -28,8 +28,11 @@ export function create_action(action) {
             return {
                 type: constants.SUBMIT_FORM,
             };
-        case 'append_value':
-        case 'link':
+        case 'clear_search_input':
+            return {
+                type: constants.CLEAR_SEARCH_INPUT,
+            };
+        case 'link': // TODO
         default:
             console.error('Unknown action type', action);
             throw new Error(`Unknown action ${action.action_type}`);

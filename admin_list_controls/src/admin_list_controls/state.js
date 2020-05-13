@@ -1,8 +1,8 @@
-import { createStore } from 'redux';
+import {createStore} from 'redux';
 import immer from "immer";
 import _ from 'lodash';
 import * as constants from './constants';
-import {submit_form} from "./index";
+import {clear_search_input, submit_form} from "./index";
 
 export const initial_state = get_initial_state();
 export const store = createStore(
@@ -44,6 +44,9 @@ function reducer(current_state=initial_state, action) {
                 return;
             case constants.SUBMIT_FORM:
                 submit_form();
+                return;
+            case constants.CLEAR_SEARCH_INPUT:
+                clear_search_input();
                 return;
             default:
                 break;
