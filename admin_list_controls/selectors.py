@@ -82,7 +82,7 @@ class BaseSelector(BaseComponent):
             }
 
 
-class Layout(BaseSelector):
+class LayoutSelector(BaseSelector):
     selector_type = 'layout'
 
     def __init__(

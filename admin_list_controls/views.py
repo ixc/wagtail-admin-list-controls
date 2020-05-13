@@ -4,7 +4,7 @@ from django.conf import settings
 from django.utils.safestring import mark_safe
 from wagtail.contrib.modeladmin.views import IndexView
 from .components import ListControls
-from .selectors import Layout
+from .selectors import LayoutSelector
 from .vendor import webpack_manifest
 
 
@@ -36,7 +36,7 @@ class ListControlsIndexViewMixin:
 
     def get_selected_list_control_layout(self):
         for obj in self.get_list_controls().flatten_tree():
-            if obj.object_type == Layout.object_type and obj.is_selected:
+            if obj.object_type == LayoutSelector.object_type and obj.is_selected:
                 return obj
 
     def get_template_names(self):

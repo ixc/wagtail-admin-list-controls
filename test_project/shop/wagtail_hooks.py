@@ -1,7 +1,7 @@
 from wagtail.contrib.modeladmin.options import ModelAdmin, modeladmin_register
 from wagtail.contrib.modeladmin.views import IndexView
 
-from admin_list_controls.selectors import Layout
+from admin_list_controls.selectors import LayoutSelector
 from admin_list_controls.views import ListControlsIndexViewMixin
 from admin_list_controls.components import ListControls, Button, Icon, Text, Panel, Divider, Block, Spacer, \
     Columns, Summary
@@ -33,8 +33,8 @@ class ProductAdminIndexView(ListControlsIndexViewMixin, IndexView):
                 'Export'
             ),
             Block(style={'float': 'right'})(
-                Layout(value='grid')('Grid view'),
-                Layout(value='list', is_default=True, style={'margin-left': '5px'})(
+                LayoutSelector(value='grid')('Grid view'),
+                LayoutSelector(value='list', is_default=True, style={'margin-left': '5px'})(
                     'List view'
                 ),
             ),
@@ -68,29 +68,32 @@ class ProductAdminIndexView(ListControlsIndexViewMixin, IndexView):
                     ),
                     default_value='',
                 ),
-                ChoiceFilter(
-                    name='choice_filter',
-                    label='A choice filter',
-                    choices=(
-                        ('apple', 'Apple'),
-                        ('banana', 'Banana'),
-                        ('pear', 'Pear'),
-                        ('persimmon', 'Persimmon'),
-                        ('plum', 'Plum'),
+                Columns()([
+                    ChoiceFilter(
+                        name='choice_filter',
+                        label='A choice filter',
+                        choices=(
+                            ('apple', 'Apple'),
+                            ('banana', 'Banana'),
+                            ('pear', 'Pear'),
+                            ('persimmon', 'Persimmon'),
+                            ('plum', 'Plum'),
+                        ),
                     ),
-                ),
-                ChoiceFilter(
-                    name='multiple_choice_filter',
-                    label='A multiple choice filter',
-                    choices=(
-                        ('apple', 'Apple'),
-                        ('banana', 'Banana'),
-                        ('pear', 'Pear'),
-                        ('persimmon', 'Persimmon'),
-                        ('plum', 'Plum'),
+                ], [
+                    ChoiceFilter(
+                        name='multiple_choice_filter',
+                        label='A multiple choice filter',
+                        choices=(
+                            ('apple', 'Apple'),
+                            ('banana', 'Banana'),
+                            ('pear', 'Pear'),
+                            ('persimmon', 'Persimmon'),
+                            ('plum', 'Plum'),
+                        ),
+                        multiple=True,
                     ),
-                    multiple=True,
-                ),
+                ]),
                 Spacer(),
                 Button(action=SubmitForm())('Apply filters'),
             ),
