@@ -9,12 +9,13 @@ class BaseFilter(BaseComponent):
     cleaned_value = None
     can_have_children = False
 
-    def __init__(self, name, label=None, apply_to_queryset=None, default_value=None, **kwargs):
+    def __init__(self, name, label=None, apply_to_queryset=None, default_value=None, summary_label=None, **kwargs):
         super().__init__(**kwargs)
         self.name = name
         self.label = label
         self._apply_to_queryset = apply_to_queryset
         self.default_value = default_value
+        self.summary_label = summary_label
 
     def handle_request(self, request):
         self.cleaned_value = self.clean(request)
@@ -31,9 +32,13 @@ class BaseFilter(BaseComponent):
 
     def serialize_summary(self):
         if self.cleaned_value:
+            label = self.summary_label
+            if not label:
+                label = self.label
+
             return {
                 'name': self.name,
-                'label': self.label,
+                'label': label,
                 'value': self.cleaned_value,
                 'action': [
                     RemoveValue(name=self.name, value=self.cleaned_value).serialize(),
