@@ -38,9 +38,9 @@ class BaseSelector(BaseComponent):
     def prepare_children(self):
         self._original_children = self.children
 
-        extra_classes = None
+        extra_classes = self.extra_classes
         if self.is_selected:
-            extra_classes = 'is-selected'
+            extra_classes += ' alc__selector alc__selector--%s is-selected' % self.selector_type
 
         actions = []
         if self.is_selected:
@@ -50,7 +50,7 @@ class BaseSelector(BaseComponent):
         actions.append(SubmitForm())
 
         self.children = [
-            Button(action=actions, extra_classes=extra_classes)(
+            Button(action=actions, extra_classes=extra_classes, style=self.style)(
                 *self._original_children,
             ),
         ]
