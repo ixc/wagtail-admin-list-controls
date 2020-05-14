@@ -101,13 +101,14 @@ class BaseSelector(BaseComponent):
 
 class LayoutSelector(BaseSelector):
     selector_type = 'layout'
+    DEFAULT_NAME = 'layout'
 
     def __init__(
         self,
         value,
         template=None,
         is_default=False,
-        name='layout',
+        name=DEFAULT_NAME,
         summary_label='Layout',
         summary_value=None,
         **kwargs,
@@ -126,13 +127,14 @@ class LayoutSelector(BaseSelector):
 
 class SortSelector(BaseSelector):
     selector_type = 'sort'
+    DEFAULT_NAME = 'sort'
 
     def __init__(
         self,
         value,
         apply_to_queryset=None,
         is_default=False,
-        name='sort',
+        name=DEFAULT_NAME,
         summary_label='Sort',
         summary_value=None,
         **kwargs,
