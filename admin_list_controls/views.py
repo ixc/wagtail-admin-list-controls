@@ -45,7 +45,7 @@ class ListControlsIndexViewMixin:
 
     def get_selected_list_control_layout(self):
         for obj in self.get_list_controls().flatten_tree():
-            if obj.object_type == LayoutSelector.object_type and obj.is_selected:
+            if isinstance(obj, LayoutSelector) and obj.is_selected:
                 return obj
 
     def get_template_names(self):
