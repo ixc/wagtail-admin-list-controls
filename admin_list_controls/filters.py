@@ -104,6 +104,8 @@ class BaseChoiceFilter(BaseFilter):
         value = request.GET.get(self.name)
         if value in whitelisted_values:
             return value
+        elif self.default_value:
+            return self.default_value
 
     def serialize(self):
         return dict(super().serialize(), **{
