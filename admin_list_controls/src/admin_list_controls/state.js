@@ -80,7 +80,7 @@ function get_initial_state() {
             if (_.isArray(control.value)) {
                 control.value.forEach(value => {
                     if (value) {
-                        values[control.name].push(control.value);
+                        values[control.name].push(value);
                     }
                 })
             } else if ('is_selected' in control) {
