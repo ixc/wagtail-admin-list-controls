@@ -10,7 +10,16 @@ class BaseSelector(BaseComponent):
     summary_label = None
     summary_value = None
 
-    def __init__(self, name, value, is_default=False, summary_label=None, summary_value=None, **kwargs):
+    def __init__(
+        self,
+        name,
+        value,
+        is_default=False,
+        summary_label=None,
+        summary_value=None,
+        apply_to_queryset=None,
+        **kwargs,
+    ):
         super().__init__(**kwargs)
         self.value = value
         self.is_default = is_default
@@ -18,6 +27,7 @@ class BaseSelector(BaseComponent):
         self.is_selected = False
         self.summary_label = summary_label
         self.summary_value = summary_value
+        self._apply_to_queryset = apply_to_queryset
 
     def handle_request(self, request):
         self.cleaned_value = self.clean(request)
@@ -34,6 +44,11 @@ class BaseSelector(BaseComponent):
             'is_default': self.is_default,
             'is_selected': self.is_selected,
         })
+
+    def apply_to_queryset(self, queryset):
+        if self._apply_to_queryset and self.is_selected:
+            return self._apply_to_queryset(queryset)
+        return queryset
 
     def prepare_children(self):
         self._original_children = self.children
@@ -131,4 +146,4 @@ class SortSelector(BaseSelector):
             **kwargs,
         )
 
-        self.apply_to_queryset = apply_to_queryset
+        self._apply_to_queryset = apply_to_queryset

@@ -29,6 +29,9 @@ class ListControlsIndexViewMixin:
         """
         A hook provided to modify the queryset
         """
+        for obj in self.get_list_controls().flatten_tree():
+            if hasattr(obj, 'apply_to_queryset'):
+                queryset = obj.apply_to_queryset(queryset)
         return queryset
 
     def get_list_controls(self):

@@ -26,9 +26,9 @@ class BaseFilter(BaseComponent):
         return request.GET.get(self.name)
 
     def apply_to_queryset(self, queryset):
-        if self._apply_to_queryset:
+        if self._apply_to_queryset and self.cleaned_value:
             return self._apply_to_queryset(queryset, self.cleaned_value)
-        return super().apply_to_queryset(queryset)
+        return queryset
 
     def serialize_summary(self):
         return self.serialize_summary_for_value(self.cleaned_value)
