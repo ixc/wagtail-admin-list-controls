@@ -212,7 +212,6 @@ class Summary(BaseComponent):
 
     def __init__(
         self,
-        overrides=None,
         reset_label=_('Reset all'),
         include_search_query=True,
         search_query_name='q',
@@ -221,10 +220,6 @@ class Summary(BaseComponent):
         **kwargs
     ):
         super().__init__(**kwargs)
-        self.overrides = overrides
-        # TODO: remove
-        if overrides:
-            raise NotImplementedError()
         self.reset_label = reset_label
         self.summary = []
         self.include_search_query = include_search_query

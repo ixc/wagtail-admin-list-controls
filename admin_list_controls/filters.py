@@ -9,13 +9,23 @@ class BaseFilter(BaseComponent):
     cleaned_value = None
     can_have_children = False
 
-    def __init__(self, name, label=None, apply_to_queryset=None, default_value=None, summary_label=None, **kwargs):
+    def __init__(
+        self,
+        name,
+        label=None,
+        apply_to_queryset=None,
+        default_value=None,
+        summary_label=None,
+        exclude_default_value_from_summary=True,
+        **kwargs,
+    ):
         super().__init__(**kwargs)
         self.name = name
         self.label = label
         self._apply_to_queryset = apply_to_queryset
         self.default_value = default_value
         self.summary_label = summary_label
+        self.exclude_default_value_from_summary = exclude_default_value_from_summary
 
     def handle_request(self, request):
         self.cleaned_value = self.clean(request)
@@ -31,6 +41,8 @@ class BaseFilter(BaseComponent):
         return queryset
 
     def serialize_summary(self):
+        if self.exclude_default_value_from_summary and self.cleaned_value == self.default_value:
+            return
         return self.serialize_summary_for_value(self.cleaned_value)
 
     def serialize_summary_for_value(self, value):
