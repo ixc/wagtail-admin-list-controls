@@ -107,3 +107,28 @@ class LayoutSelector(BaseSelector):
         )
 
         self.template = template
+
+
+class SortSelector(BaseSelector):
+    selector_type = 'sort'
+
+    def __init__(
+        self,
+        value,
+        apply_to_queryset=None,
+        is_default=False,
+        name='sort',
+        summary_label='Sort',
+        summary_value=None,
+        **kwargs,
+    ):
+        super().__init__(
+            name=name,
+            value=value,
+            is_default=is_default,
+            summary_label=summary_label,
+            summary_value=summary_value,
+            **kwargs,
+        )
+
+        self.apply_to_queryset = apply_to_queryset
