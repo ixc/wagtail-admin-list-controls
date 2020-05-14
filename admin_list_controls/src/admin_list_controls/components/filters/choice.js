@@ -4,6 +4,7 @@ import _ from 'lodash';
 import {SET_VALUE} from '../../constants';
 import {store} from '../../state';
 import c from "classnames";
+import {submit_form} from "../../index";
 
 export function ChoiceFilter({control}) {
     const choices = [];
@@ -34,48 +35,54 @@ export function ChoiceFilter({control}) {
             className={c('alc__filter', 'alc__filter--choice', control.extra_classes)}
             style={control.style}
         >
-            {control.label
-                ? (
-                    <label
-                        className="alc__filter__label"
-                        onClick={() => select_ref.current.focus()}
-                    >{control.label}</label>
-                )
-                : null
-            }
-            <div className="alc__filter__input-wrap">
-                <Select
-                    className="alc__filter__input"
-                    value={value}
-                    isMulti={control.multiple}
-                    options={choices}
-                    isClearable
-                    ref={select_ref}
-                    onChange={selected => {
-                        set_value(selected);
-                        let selected_value;
-                        if (control.multiple) {
-                            selected_value = control.multiple
-                                ? _.map(selected, 'value')
-                                : [selected.value];
-                        } else if (selected) {
-                            selected_value = selected.value;
-                        }
-                        store.dispatch({
-                            type: SET_VALUE,
-                            name: control.name,
-                            value: selected_value,
-                        });
-                    }}
-                    theme={theme => ({
-                      ...theme,
-                      colors: {
-                        ...theme.colors,
-                        primary: '#00b0b1',
-                      },
-                    })}
-                />
-            </div>
+            {/* A form element allows for keyboards to trigger submit events (enter keypress, etc) */}
+            <form onSubmit={event => {
+                event.preventDefault();
+                submit_form();
+            }}>
+                {control.label
+                    ? (
+                        <label
+                            className="alc__filter__label"
+                            onClick={() => select_ref.current.focus()}
+                        >{control.label}</label>
+                    )
+                    : null
+                }
+                <div className="alc__filter__input-wrap">
+                    <Select
+                        className="alc__filter__input"
+                        value={value}
+                        isMulti={control.multiple}
+                        options={choices}
+                        isClearable
+                        ref={select_ref}
+                        onChange={selected => {
+                            set_value(selected);
+                            let selected_value;
+                            if (control.multiple) {
+                                selected_value = control.multiple
+                                    ? _.map(selected, 'value')
+                                    : [selected.value];
+                            } else if (selected) {
+                                selected_value = selected.value;
+                            }
+                            store.dispatch({
+                                type: SET_VALUE,
+                                name: control.name,
+                                value: selected_value,
+                            });
+                        }}
+                        theme={theme => ({
+                          ...theme,
+                          colors: {
+                            ...theme.colors,
+                            primary: '#00b0b1',
+                          },
+                        })}
+                    />
+                </div>
+            </form>
         </div>
     );
 }
