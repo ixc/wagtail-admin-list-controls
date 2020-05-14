@@ -70,6 +70,8 @@ class BaseSelector(BaseComponent):
                     elif isinstance(component, Text):
                         value += component.content + ' '
                 value = value.strip()
+                if not value:
+                    value = self.cleaned_value
 
             return {
                 'name': self.name,
