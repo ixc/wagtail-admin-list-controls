@@ -7,9 +7,9 @@ export function create_action(action) {
                 type: constants.TOGGLE_PANEL,
                 ref: action.ref,
             };
-        case 'close_panel':
+        case 'collapse_panel':
             return {
-                type: constants.CLOSE_PANEL,
+                type: constants.COLLAPSE_PANEL,
                 ref: action.ref,
             };
         case 'set_value':

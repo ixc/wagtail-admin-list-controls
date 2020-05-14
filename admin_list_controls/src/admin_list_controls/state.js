@@ -24,7 +24,7 @@ function reducer(current_state=initial_state, action) {
                     state.collapsed_panels_by_ref[action.ref] = !state.collapsed_panels_by_ref[action.ref];
                 }
                 return;
-            case constants.CLOSE_PANEL:
+            case constants.COLLAPSE_PANEL:
                 state.collapsed_panels_by_ref[action.ref] = true;
                 return;
             case constants.SET_VALUE:

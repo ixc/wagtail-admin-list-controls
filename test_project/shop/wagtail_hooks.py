@@ -5,7 +5,7 @@ from admin_list_controls.selectors import LayoutSelector
 from admin_list_controls.views import ListControlsIndexViewMixin
 from admin_list_controls.components import ListControls, Button, Icon, Text, Panel, Divider, Block, Spacer, \
     Columns, Summary
-from admin_list_controls.actions import TogglePanel, ClosePanel, SubmitForm, Link
+from admin_list_controls.actions import TogglePanel, CollapsePanel, SubmitForm, Link
 from admin_list_controls.filters import TextFilter, ChoiceFilter, RadioFilter, BooleanFilter
 from .models import Product
 
@@ -17,13 +17,13 @@ class ProductAdminIndexView(ListControlsIndexViewMixin, IndexView):
         return ListControls()(
             Button(action=[
                 TogglePanel(ref='panel_1'),
-                ClosePanel(ref='panel_2'),
+                CollapsePanel(ref='panel_2'),
             ])(
                 Icon('icon icon-search'),
                 'Filters',
             ),
             Button(action=[
-                ClosePanel(ref='panel_1'),
+                CollapsePanel(ref='panel_1'),
                 TogglePanel(ref='panel_2'),
             ])(
                 'Another panel'

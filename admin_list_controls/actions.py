@@ -63,8 +63,8 @@ class TogglePanel(BaseAction):
         })
 
 
-class ClosePanel(BaseAction):
-    action_type = 'close_panel'
+class CollapsePanel(BaseAction):
+    action_type = 'collapse_panel'
 
     def __init__(self, ref):
         self.ref = ref
