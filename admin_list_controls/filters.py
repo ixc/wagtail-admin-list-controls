@@ -31,20 +31,28 @@ class BaseFilter(BaseComponent):
         return super().apply_to_queryset(queryset)
 
     def serialize_summary(self):
-        if self.cleaned_value:
+        return self.serialize_summary_for_value(self.cleaned_value)
+
+    def serialize_summary_for_value(self, value):
+        if value:
             label = self.summary_label
             if not label:
                 label = self.label
+            display_value = self.get_summary_display_value_for_value(value)
 
             return {
                 'name': self.name,
                 'label': label,
-                'value': self.cleaned_value,
+                'display_value': display_value,
+                'value': value,
                 'action': [
-                    RemoveValue(name=self.name, value=self.cleaned_value).serialize(),
+                    RemoveValue(name=self.name, value=value).serialize(),
                     SubmitForm().serialize(),
                 ],
             }
+
+    def get_summary_display_value_for_value(self, value):
+        return value
 
     def serialize(self):
         return dict(super().serialize(), **{
@@ -73,9 +81,7 @@ class BooleanFilter(BaseFilter):
         return bool(value)
 
 
-class RadioFilter(BaseFilter):
-    filter_type = 'radio'
-
+class BaseChoiceFilter(BaseFilter):
     def __init__(self, choices, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
@@ -92,19 +98,29 @@ class RadioFilter(BaseFilter):
             'choices': self.choices,
         })
 
+    def get_summary_display_value_for_value(self, value):
+        """
+        Returns the corresponding display value for the raw value
+        """
+        choice_dict = dict(self.choices)
+        return choice_dict.get(value, value)
 
-class ChoiceFilter(BaseFilter):
+
+class RadioFilter(BaseChoiceFilter):
+    filter_type = 'radio'
+
+
+class ChoiceFilter(BaseChoiceFilter):
     filter_type = 'choice'
 
     def __init__(self, choices, multiple=False, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+        super().__init__(choices=choices, *args, **kwargs)
 
-        self.choices = choices
         self.multiple = multiple
 
     def clean(self, request):
-        whitelisted_values = [choice[0] for choice in self.choices]
         if self.multiple:
+            whitelisted_values = [choice[0] for choice in self.choices]
             values = request.GET.getlist(self.name)
             cleaned_values = [
                 value for value in values
@@ -116,16 +132,18 @@ class ChoiceFilter(BaseFilter):
                 return [self.default_value]
             else:
                 return []
-        else:
-            value = request.GET.get(self.name)
-            if value in whitelisted_values:
-                return value
-            elif self.default_value:
-                return self.default_value
-            return None
+        return super().clean(request)
+
+    def serialize_summary(self):
+        if self.multiple:
+            summaries = []
+            for value in self.cleaned_value:
+                summaries.append(
+                    self.serialize_summary_for_value(value))
+            return summaries
+        return super().serialize_summary()
 
     def serialize(self):
         return dict(super().serialize(), **{
-            'choices': self.choices,
             'multiple': self.multiple,
         })

@@ -251,9 +251,11 @@ class Summary(BaseComponent):
 
         for component in components:
             if hasattr(component, 'serialize_summary'):
-                summary = component.serialize_summary()
-                if summary:
-                    self.summary.append(summary)
+                summaries = component.serialize_summary()
+                if isinstance(summaries, dict):
+                    summaries = [summaries]
+                if summaries:
+                    self.summary += summaries
 
     def serialize(self):
         return dict(super().serialize(), **{

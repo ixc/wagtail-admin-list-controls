@@ -24,7 +24,7 @@ export function Summary({control}) {
                 }
 
                 let label = obj.label;
-                let value = obj.value;
+                let value = obj.display_value || obj.value;
 
                 if (value === true) {
                     // Don't render the value for boolean filters
