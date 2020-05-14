@@ -1,5 +1,7 @@
 import os
 import json
+from collections import Iterable
+
 from django.conf import settings
 from django.utils.safestring import mark_safe
 from wagtail.contrib.modeladmin.views import IndexView
@@ -31,7 +33,11 @@ class ListControlsIndexViewMixin:
 
     def get_list_controls(self):
         if not self._built_list_controls:
-            self._built_list_controls = self.build_list_controls()
+            list_controls = self.build_list_controls()
+            # Allow the controls to be defined in a list
+            if isinstance(list_controls, Iterable):
+                list_controls = ListControls()(*list_controls)
+            self._built_list_controls = list_controls
         return self._built_list_controls
 
     def get_selected_list_control_layout(self):
