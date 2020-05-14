@@ -112,16 +112,6 @@
   padding-top: 5px;
 }
 
-.alc__selector {
-  display: inline-block;
-}
-
-.button + .alc__selector,
-.alc__selector + .button,
-.alc__selector + .alc__selector {
-  margin-left: 1em;
-}
-
 .alc__summary {
   margin: 20px 0 10px 0;
 }
