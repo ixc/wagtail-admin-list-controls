@@ -70,13 +70,19 @@ class ListControlsIndexViewMixin:
     def get_context_data(self, **kwargs):
         context_data = super().get_context_data(**kwargs)
 
-        # Consumed by the front-end code to build the UI
+        selected_layout = self.get_selected_list_control_layout()
+        if selected_layout and selected_layout.template:
+            selected_layout_template = selected_layout.template
+        else:
+            selected_layout_template = None
+
         context_data['admin_list_controls'] = {
             'index_template': self.get_list_controls_index_template(),
+            # Consumed by the front-end code to build the UI
             'initial_state': json.dumps({
                 'admin_list_controls': self.get_list_controls().serialize(),
             }),
-            'selected_layout': self.get_selected_list_control_layout(),
+            'selected_layout_template': selected_layout_template,
             'widget_js': self.get_list_controls_widget_js(),
         }
 
