@@ -100,22 +100,36 @@ class Spacer(Block):
 class Columns(BaseComponent):
     object_type = 'columns'
 
+    def __init__(self, column_count=2, **kwargs):
+        super().__init__(**kwargs)
+        self.column_count = column_count
+
     def prepare_children(self):
         self._original_children = self.children
 
-        column_count = len(self.children)
-        gutter_width = '10px'
+        column_count = self.column_count
+        gutter_width = '20px'
         column_width = 'calc((100% - (({cc} - 1) * {gw})) / {cc})'.format(
             cc=column_count,
             gw=gutter_width,
 
         )
+
+        columns = [[] for _ in range(column_count)]
+        next_column_index = 0
+        for i, child in enumerate(self.children):
+            next_column = columns[next_column_index]
+            next_column.append(child)
+            next_column_index += 1
+            if (next_column_index + 1) > column_count:
+                next_column_index = 0
+
         self.children = []
-        for i, column_children in enumerate(self._original_children):
+        for column_index, column_children in enumerate(columns):
             style = {
                 'width': column_width,
                 'float': 'left',
-                'margin-left': gutter_width if i > 0 else '0',
+                'margin-left': gutter_width if column_index > 0 else '0',
             }
             self.children.append(
                 Block(style)(*column_children),
