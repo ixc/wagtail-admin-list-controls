@@ -11,7 +11,7 @@ class BaseComponent:
     can_have_children = True
     _children_defined = False
 
-    def __init__(self, style=None, extra_classes=None):
+    def __init__(self, style=None, extra_classes=''):
         self.style = self.get_default_style()
         if style:
             self.style.update(style)
