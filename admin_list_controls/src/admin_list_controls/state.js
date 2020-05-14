@@ -41,6 +41,7 @@ function reducer(current_state=initial_state, action) {
                 return;
             case constants.REMOVE_ALL_VALUES:
                 state.values = Object.create(null);
+                clear_search_input();
                 return;
             case constants.SUBMIT_FORM:
                 submit_form();
