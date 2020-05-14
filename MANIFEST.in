@@ -1,0 +1,4 @@
+include admin_list_controls/webpack_manifest.json
+recursive-include admin_list_controls/src *.*
+recursive-include admin_list_controls/src *.*
+recursive-include admin_list_controls/templates *.*
