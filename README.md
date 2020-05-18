@@ -12,6 +12,7 @@ thing to docs will be the test cases and test project.
 - [Installation](#installation)
 - [Documentation](#documentation)
 - [Rationale and goals](#rationale-and-goals)
+- [Project setup](#project-setup)
 - [Test suite](#test-suite)
 - [Building the project](#building-the-project)
 
@@ -45,46 +46,47 @@ Somewhat reluctantly, this library was built to cover our needs. Now that the du
 stabilised, we're finding increasing numbers of use-cases for it.
 
 
+## Project setup
+
+```
+# Frontend
+npm install
+npm run build
+```
+
+```
+# Backend
+virtualenv venv
+source venv/bin/activate
+pip install -r requirements.txt
+./test_project/manage.py migrate
+```
+
+
 ## Test suite
 
 ```
-# Setup
-npm install
-npm run build
-pip install -r requirements.txt
-./manage.py migrate
-```
-
-```
-# Run the tests
-./manage.py test admin_list_controls
+./test_project/manage.py test admin_list_controls
 ```
 
 
 ## Building the project
 
-### Build for development
+### Building the frontend
 
 ```
-# Frontend
-npm install
+# Development (file watchers, no optimisation, etc)
 npm run build-dev
+
+# Production/release
+npm run build
 ```
 
-```
-# Backend
-pip install -r requirements.txt
-./manage.py migrate
-./manage.py runserver
-```
-
-
-### Build for release
+### Building the project for release
 
 ```
-npm install
 npm run build
 rm -rf dist/
 python setup.py sdist bdist_wheel
 python setup.py upload
-``` 
+```
