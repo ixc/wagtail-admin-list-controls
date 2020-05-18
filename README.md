@@ -1,13 +1,16 @@
 # wagtail-admin-list-controls
 
-Adds advanced search, ordering and layout controls to wagtail's modeladmin list views.
+A UI toolkit to build custom filtering and other functionalities into your admin list views.
 
 ![Collapsible "Advanced Search" and "Order Results" panels with buttons to change layouts](./docs/screenshots/image_list_view_default.png)
 
+Note that the project is currently in early release and is currently undergoing significant API churn.
+Documenation should be forthcoming once everything settles. If you'd like to use the system, the closest
+thing to docs will be the test cases and test project.
+
 
 - [Installation](#installation)
-- [Basic usage](#basic-usage)
-- [Screenshots](#screenshots)
+- [Documentation](#documentation)
 - [Rationale and goals](#rationale-and-goals)
 - [Test suite](#test-suite)
 - [Building the project](#building-the-project)
@@ -15,110 +18,28 @@ Adds advanced search, ordering and layout controls to wagtail's modeladmin list 
 
 ## Installation
 
-Note that this project will be published to PyPI sometime soon, we're currently evaluating some changes to improve usability.
-
-If you'd like to use it right now, your best best would be to clone the repo.
-
-
-## Basic usage
-
-The code below will wire up an extended list view for `MyModel` instances. The view will add a string filter and
-sorting option.
-
-```python
-# wagtail_hooks.py
-
-from wagtail.contrib.modeladmin.options import ModelAdmin, modeladmin_register
-from wagtail.contrib.modeladmin import views as modeladmin_views
-from admin_list_controls.views import AdminListControlsMixin
-from admin_list_controls.options import ListViewOptions, FilterOptions, SortOptions, Filter, Sort, \ 
-    STRING_FILTER, SORT_PARAM
-from .models import MyModel
-
-FOO_FILTER_NAME = 'foo'
-BAR_SORT_VALUE = 'bar_sort'
-
-
-class MyModelAdminIndexView(AdminListControlsMixin, modeladmin_views.IndexView):
-    def build_list_control_options(self):
-        foo_filter_value = self.request.get(FOO_FILTER_NAME)
-        selected_sort = self.request.get(SORT_PARAM)
-
-        return ListViewOptions(
-            filters=FilterOptions([
-                Filter(
-                    name=FOO_FILTER_NAME,
-                    label="Foo filter",
-                    results_description='matching foo <strong>%s</strong>' % foo_filter_value,
-                    type=STRING_FILTER,
-                    value=foo_filter_value,
-                ),
-            ]),
-            sorts=SortOptions([
-                Sort(
-                    label='Bar sort',
-                    results_description='Sorted by Bar sort',
-                    value=BAR_SORT_VALUE,
-                    is_selected=selected_sort == BAR_SORT_VALUE,
-                    is_default=True,
-                ),
-            ]),
-        )
-    
-    def apply_list_controls_to_queryset(self, queryset):
-        for filter_obj in self.get_selected_list_control_filters():
-            filter_name = filter_obj['name']
-            filter_value = filter_obj['value']
-            if filter_name == FOO_FILTER_NAME:
-                queryset = queryset.filter(foo_field__icontains=filter_value)
-
-        selected_sorts = self.get_selected_list_control_sorts()
-        selected_sort_value = selected_sorts[0]['value'] if selected_sorts else None 
-        if selected_sort_value == BAR_SORT_VALUE:
-            queryset = queryset.order_by('bar_field')
-
-        return queryset
-
-
-
-@modeladmin_register
-class TestModelAdmin(ModelAdmin):
-    model = MyModel
-    index_view_class = MyModelAdminIndexView
+```
+pip install wagtail-admin-list-controls
 ```
 
 
-## Screenshots
-
-### Collapsible "Advanced Search" and "Order Results" panels with buttons to change layouts. 
-
-![](./docs/screenshots/image_list_view_default.png)
+## Documentation
 
 
-### "Advanced Search" panel expanded and displaying a powerful search interface. 
-
-![](./docs/screenshots/image_list_view_filters.png)
-
-
-### "Order Results" panel expanded and displaying multiple options to control ordering of the results. 
-
-![](./docs/screenshots/image_list_view_ordering.png)
-
-
-### A textual description of the search & ordering controls is provided to improve UX.
-
-![](./docs/screenshots/image_list_view_textual_description.png)
+**TODO** see test suite + test project for code examples.
 
 
 ## Rationale and goals
 
-This library emerged from a large build that required an admin list-view with an exhaustive set of filters and the 
+This library emerged from a large build that required an admin list view with an exhaustive set of filters and the 
 ability for users to change the ordering of the results. The filters would need to perform exact and substring matching 
-against textual fields, as well as exact matches on boolean and choice fields. 
+against textual fields, as well as exact matches on boolean and choice fields. Some of the sorts applied to order the 
+results also relied on complicated querying and conditional behaviour (eg: certain filter+sort combinations required 
+different code paths).
 
-We initially attempted to use Wagtail's built-in searching and filtering features, but they were found to be too 
-simple for our use-cases and resulted in a clunky user-experience. Third-party libraries were investigated, but little 
-were found that came close to matching our requirements.
+We initially attempted to use Wagtail's built-in searching and filtering features, but they were found to a be too 
+limiting for our use-cases and resulted in a non-optimal experience for users. Third-party libraries were 
+investigated, but there wasn't much in the ecosystem
 
 Somewhat reluctantly, this library was built to cover our needs. Now that the dust has settled and the code has 
 stabilised, we're finding increasing numbers of use-cases for it.
@@ -163,6 +84,7 @@ pip install -r requirements.txt
 ```
 npm install
 npm run build
+rm -rf dist/
 python setup.py sdist bdist_wheel
 python setup.py upload
 ``` 
