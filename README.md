@@ -4,8 +4,8 @@ A UI toolkit to build custom filtering and other functionalities into your admin
 
 ![Collapsible "Advanced Search" and "Order Results" panels with buttons to change layouts](./docs/screenshots/image_list_view_default.png)
 
-Note that the project is currently in early release and is currently undergoing significant API churn.
-Documenation should be forthcoming once everything settles. If you'd like to use the system, the closest
+Note that the project is currently in early release and is undergoing significant API churn.
+Documentation should be forthcoming once everything settles. If you'd like to use this lib, the closest
 thing to docs will be the test cases and test project.
 
 
