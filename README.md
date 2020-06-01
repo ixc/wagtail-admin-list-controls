@@ -2,7 +2,7 @@
 
 A UI toolkit that extends Wagtail's admin list views and allows you to build custom filters, buttons, panels and more.
 
-![](./docs/screenshots/image_list_view_default.png)
+![](./docs/screenshots/demo.png)
 
 
 - [Installation](#installation)
@@ -108,7 +108,7 @@ Block(style={'color': 'blue'})(
 )
 ```
 
-All components share two basic options:
+All components share some options:
  - `extra_classes`: a string of classnames to add to the component. For example, `'some_class and_another_class'`.
  - `style`: a dictionary of inline styles that are applied to the component. For example, `{'color': 'red'}`.  
 
@@ -261,8 +261,7 @@ Button(action=Link('https://google.com'))(
 
 Summary components are used to summarise the data selected in different filters and selectors.
 It renders multiple buttons that can be used to reset specific values or the entire set of form 
-data. 
-
+  
 ```python
 from admin_list_controls.components import Summary
 
@@ -270,14 +269,271 @@ Summary()
 ```
 
 
-
 ### Filters
 
+Filters are a mixture of Django's widgets and form fields. They allow you to define a form widget and 
+then apply the submitted values against the list view's queryset.
+
+All components share some options:
+ - `name`: a string representing the name of the GET param used by the filter.
+ - `label`: a string representing the label of the filter.
+ - `apply_to_queryset`: a function that accepts a two arguments, a queryset and the filter's selected value. If a filter
+   has a value, this method will be called. If no value has been submitted and no default has been defined, the function 
+   will not be called.
+ - `default_value`: a default value to use if no value has been submitted.
+
+#### TextFilter
+
+A textual input, comparable to an `<input type="text">`. 
+  
+```python
+from admin_list_controls.filters import TextFilter
+
+TextFilter(
+    name='name',
+    label='Name',
+    apply_to_queryset=lambda queryset, value: queryset.filter(name__icontains=value),
+)
+```
+
+#### BooleanFilter
+
+A checkbox input.
+
+Note that `apply_to_queryset` is only called if a truthy value has been submitted.
+  
+```python
+from admin_list_controls.filters import BooleanFilter
+
+BooleanFilter(
+    name='is_selected',
+    label='Is selected',
+    apply_to_queryset=lambda queryset, _: queryset.filter(is_selected=True),
+)
+```
+
+#### RadioFilter
+
+A radio button choice selector. RadioFilter values cannot be cleared, so you will probably want to specify a default
+value with an opt-out choice.
+
+```python
+from admin_list_controls.filters import RadioFilter
+
+RadioFilter(
+    name='color',
+    label='Color',
+    default_value='',
+    choices=(
+        ('', 'Any'),
+        ('red', 'Red'),
+        ('blue', 'Blue'),
+        ('green', 'Green'),
+    ),
+    apply_to_queryset=lambda queryset, value: queryset.filter(color=value) if value else queryset,
+)
+```
+
+#### ChoiceFilter
+
+A dropdown choice selector. ChoiceFilters can have their values cleared.
+
+The optional argument `multiple` indicates if the widget should allow multiple values. 
+
+```python
+from admin_list_controls.filters import ChoiceFilter
+
+# Single choice
+ChoiceFilter(
+    name='color',
+    label='Color',
+    choices=(
+        ('red', 'Red'),
+        ('blue', 'Blue'),
+        ('green', 'Green'),
+    ),
+    apply_to_queryset=lambda queryset, value: queryset.filter(color=value),
+)
+
+# Multiple choice
+ChoiceFilter(
+    name='color',
+    label='Color',
+    multiple=True,
+    choices=(
+        ('red', 'Red'),
+        ('blue', 'Blue'),
+        ('green', 'Green'),
+    ),
+    apply_to_queryset=lambda queryset, values: queryset.filter(color__in=values),
+)
+```
 
 ### Selectors
 
+Selectors are buttons that are used to toggle form values and then effect the view. A selector will
+apply its effects if its `value` is passed in the GET params. 
+
+Selectors accept a boolean value for the `is_default` param. Those with a truthy value will be
+selected without any submitted data. 
+
+
+#### SortSelector
+
+SortSelectors are used to switch between different sorting methods on the queryset. SortSelectors use
+the `sort` GET param by default, but this can be changed with the `name` argument to the instance.
+
+```python
+from admin_list_controls.selectors import SortSelector
+
+# The default sorting method, will be applied if none are selected
+SortSelector(
+    value='name_sort_asc', 
+    is_default=True,
+    apply_to_queryset=lambda queryset: queryset.order_by('name')
+)(
+    'Sort by name A-Z'
+)
+
+SortSelector(
+    value='name_sort_desc', 
+    apply_to_queryset=lambda queryset: queryset.order_by('-name')
+)(
+    'Sort by name Z-A'
+)
+```
+
+
+#### LayoutSelector
+
+LayoutSelectors are used to switch between different display styles on the list view's results.
+They accept an optional `template` argument which should be a path to a django template.
+
+```python
+from admin_list_controls.selectors import LayoutSelector
+
+# The default layout to use
+LayoutSelector(
+    value='list_view',
+    is_default=True,
+)(
+    'List view'
+)
+
+LayoutSelector(
+    value='grid_view', 
+    template='path/to/template.html'
+)(
+    'Grid view'
+)
+```
+
 
 ### Actions
+
+Actions are dynamic behaviours that can be added to buttons as the `action` argument. They can be passed as single
+action instance, or a list of actions that will be applied sequentially.
+
+```python
+from admin_list_controls.components import Button
+from admin_list_controls.actions import SubmitForm, SetValue, Link
+
+Button(action=SubmitForm())(
+    'Submit the form and reloads the result list'
+)
+
+Button(action=[
+    SetValue(
+        name='some_param',
+        value='some_value',
+    ),
+    SubmitForm()
+])(
+    'Sets a value and then submits it'
+)
+
+Button(action=Link('https://google.com'))(
+    'Sends the user to Google'
+)
+```
+
+#### SetValue
+
+Used to set form values.
+
+```python
+from admin_list_controls.actions import SetValue
+
+SetValue(
+    name='some_param',
+    value='some_value',
+)
+```
+
+#### RemoveValue
+
+Used to remove values from the form. If multiple values have been entered for a certain `name`, this
+can be used to selectively remove a single value.
+
+```python
+from admin_list_controls.actions import RemoveValue
+
+RemoveValue(
+    name='some_param',
+    value='some_value',
+)
+```
+
+#### Link
+
+Used to send the users browser to a certain url.
+
+```python
+from admin_list_controls.actions import Link
+
+Link(url='https://google.com')
+```
+
+#### TogglePanel
+
+Used to toggle a panel between collapsed and expanded states. The `ref` argument
+should match the `ref` on a Panel declaration.
+
+```python
+from admin_list_controls.actions import TogglePanel
+
+TogglePanel(ref='some_panel_ref')
+```
+
+#### CollapsePanel
+
+Used to collapse a panel. The `ref` argument should match the `ref` on a Panel declaration.
+
+```python
+from admin_list_controls.actions import CollapsePanel
+
+CollapsePanel(ref='some_panel_ref')
+```
+
+#### ClearSearchInput
+
+Used to clear Wagtail's built-in search input.
+
+```python
+from admin_list_controls.actions import ClearSearchInput
+
+ClearSearchInput()
+```
+
+#### SubmitForm
+
+Used to submit the form with any data that has been added to it.
+
+```python
+from admin_list_controls.actions import SubmitForm
+
+SubmitForm()
+```
 
 
 ## Rationale and goals
