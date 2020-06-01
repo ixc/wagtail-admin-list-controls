@@ -1,12 +1,8 @@
 # wagtail-admin-list-controls
 
-A UI toolkit to build custom filtering and other functionalities into your admin list views.
+A UI toolkit that extends Wagtail's admin list views and allows you to build custom filters, workflows and more.
 
 ![Collapsible "Advanced Search" and "Order Results" panels with buttons to change layouts](./docs/screenshots/image_list_view_default.png)
-
-Note that the project is currently in early release and is undergoing significant API churn.
-Documentation should be forthcoming once everything settles. If you'd like to use this lib, the closest
-thing to docs will be the test cases and test project.
 
 
 - [Installation](#installation)
@@ -23,6 +19,8 @@ thing to docs will be the test cases and test project.
 pip install wagtail-admin-list-controls
 ```
 
+and add `'admin-list-controls'` to `INSTALLED_APPS` in your settings.
+
 
 ## Documentation
 
@@ -35,12 +33,12 @@ pip install wagtail-admin-list-controls
 This library emerged from a large build that required an admin list view with an exhaustive set of filters and the 
 ability for users to change the ordering of the results. The filters would need to perform exact and substring matching 
 against textual fields, as well as exact matches on boolean and choice fields. Some of the sorts applied to order the 
-results also relied on complicated querying and conditional behaviour (eg: certain filter+sort combinations required 
-different code paths).
+results also relied on complicated querying and conditional behaviours. In some extreme conditions, certain 
+combinations of filters and sorts would require distinct code paths.
 
-We initially attempted to use Wagtail's built-in searching and filtering features, but they were found to a be too 
+We initially attempted to use Wagtail's built-in searching and filtering features, but they were found to be too 
 limiting for our use-cases and resulted in a non-optimal experience for users. Third-party libraries were 
-investigated, but there wasn't much in the ecosystem
+investigated, but the ecosystem doesn't have much covering the space.
 
 Somewhat reluctantly, this library was built to cover our needs. Now that the dust has settled and the code has 
 stabilised, we're finding increasing numbers of use-cases for it.
