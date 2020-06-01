@@ -1,8 +1,8 @@
 # wagtail-admin-list-controls
 
-A UI toolkit that extends Wagtail's admin list views and allows you to build custom filters, workflows and more.
+A UI toolkit that extends Wagtail's admin list views and allows you to build custom filters, buttons, panels and more.
 
-![Collapsible "Advanced Search" and "Order Results" panels with buttons to change layouts](./docs/screenshots/image_list_view_default.png)
+![](./docs/screenshots/image_list_view_default.png)
 
 
 - [Installation](#installation)
@@ -24,8 +24,44 @@ and add `'admin-list-controls'` to `INSTALLED_APPS` in your settings.
 
 ## Documentation
 
+### Basic usage
 
-**TODO** see test suite + test project for code examples.
+The following example provides a text input that allows the user to perform textual queries against
+a related model's `name` field.. 
+
+```python
+from wagtail.contrib.modeladmin.options import ModelAdmin, modeladmin_register
+from admin_list_controls.views import ListControlsIndexView
+from admin_list_controls.components import Button, Panel
+from admin_list_controls.actions import SubmitForm
+from admin_list_controls.filters import TextFilter
+
+
+class IndexView(ListControlsIndexView):
+        def build_list_controls(self):
+            return [
+                Panel()(
+                    TextFilter(
+                        name="text_filter",
+                        label="Creator's name",
+                        apply_to_queryset=lambda queryset, value: queryset.filter(created_by__name__icontains=value)
+                    ),
+                    Button(action=SubmitForm())(
+                        "Apply filters",
+                    ),
+                ),
+            ]
+
+
+@modeladmin_register
+class MyModelAdmin(ModelAdmin):
+    index_view_class = IndexView
+    # ...
+```
+
+The code above should give you a UI that looks like
+
+![](./docs/screenshots/basic_usage_example.png)
 
 
 ## Rationale and goals
