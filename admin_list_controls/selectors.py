@@ -17,6 +17,7 @@ class BaseSelector(BaseComponent):
         is_default=False,
         summary_label=None,
         summary_value=None,
+        summary_group='selector',
         apply_to_queryset=None,
         **kwargs,
     ):
@@ -27,6 +28,7 @@ class BaseSelector(BaseComponent):
         self.is_selected = False
         self.summary_label = summary_label
         self.summary_value = summary_value
+        self.summary_group = summary_group
         self._apply_to_queryset = apply_to_queryset
 
     def handle_request(self, request):
@@ -72,26 +74,11 @@ class BaseSelector(BaseComponent):
 
     def serialize_summary(self):
         if self.is_selected and not self.is_default:
-            label = self.summary_label
-            if not label:
-                label = self.name.title()
-
-            value = self.summary_value
-            if value is None:
-                value = ''
-                for component in self.flatten_tree():
-                    if isinstance(component, str):
-                        value += component + ' '
-                    elif isinstance(component, Text):
-                        value += component.content + ' '
-                value = value.strip()
-                if not value:
-                    value = self.cleaned_value
-
             return {
+                'group': self.summary_group,
                 'name': self.name,
-                'label': label,
-                'value': value,
+                'label': self.summary_label,
+                'value': self.summary_value,
                 'action': [
                     RemoveValue(name=self.name, value=self.cleaned_value).serialize(),
                     SubmitForm().serialize(),
@@ -109,8 +96,9 @@ class LayoutSelector(BaseSelector):
         template=None,
         is_default=False,
         name=DEFAULT_NAME,
-        summary_label='Layout',
+        summary_label=None,
         summary_value=None,
+        summary_group='layout',
         **kwargs,
     ):
         super().__init__(
@@ -119,6 +107,7 @@ class LayoutSelector(BaseSelector):
             is_default=is_default,
             summary_label=summary_label,
             summary_value=summary_value,
+            summary_group=summary_group,
             **kwargs,
         )
 
@@ -135,8 +124,9 @@ class SortSelector(BaseSelector):
         apply_to_queryset=None,
         is_default=False,
         name=DEFAULT_NAME,
-        summary_label='Sort',
+        summary_label=None,
         summary_value=None,
+        summary_group='sort',
         **kwargs,
     ):
         super().__init__(
@@ -145,6 +135,7 @@ class SortSelector(BaseSelector):
             is_default=is_default,
             summary_label=summary_label,
             summary_value=summary_value,
+            summary_group=summary_group,
             **kwargs,
         )
 

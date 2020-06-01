@@ -209,6 +209,12 @@ class Button(BaseComponent):
 
 class Summary(BaseComponent):
     object_type = 'summary'
+    default_group_names = {
+        'filter': _('Filters'),
+        'sort': _('Sort'),
+        'layout': _('Layout'),
+        'selector': '',
+    }
 
     def __init__(
         self,
@@ -217,6 +223,7 @@ class Summary(BaseComponent):
         search_query_name='q',
         search_query_label=_('Search'),
         search_query_value=None,
+        group_names=None,
         **kwargs
     ):
         super().__init__(**kwargs)
@@ -226,6 +233,9 @@ class Summary(BaseComponent):
         self.search_query_name = search_query_name
         self.search_query_label = search_query_label
         self.search_query_value = search_query_value
+        self.group_names = self.default_group_names
+        if group_names:
+            self.group_names.update(group_names)
 
     def handle_request(self, request):
         if self.include_search_query:
@@ -251,6 +261,12 @@ class Summary(BaseComponent):
                     summaries = [summaries]
                 if summaries:
                     self.summary += summaries
+
+        for summary in self.summary:
+            if 'group_name' not in summary:
+                summary['group_name'] = self.group_names.get(
+                    summary.get('group'),
+                )
 
     def serialize(self):
         return dict(super().serialize(), **{

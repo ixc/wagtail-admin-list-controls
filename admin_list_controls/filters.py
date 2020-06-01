@@ -17,6 +17,7 @@ class BaseFilter(BaseComponent):
         default_value=None,
         summary_label=None,
         exclude_default_value_from_summary=True,
+        summary_group='filter',
         **kwargs,
     ):
         super().__init__(**kwargs)
@@ -25,6 +26,7 @@ class BaseFilter(BaseComponent):
         self._apply_to_queryset = apply_to_queryset
         self.default_value = default_value
         self.summary_label = summary_label
+        self.summary_group = summary_group
         self.exclude_default_value_from_summary = exclude_default_value_from_summary
 
     def handle_request(self, request):
@@ -53,6 +55,7 @@ class BaseFilter(BaseComponent):
             display_value = self.get_summary_display_value_for_value(value)
 
             return {
+                'group': self.summary_group,
                 'name': self.name,
                 'label': label,
                 'display_value': display_value,
