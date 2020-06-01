@@ -12,6 +12,10 @@
   margin-top: 20px;
 }
 
+.alc__panel:first-child {
+  margin-top: 0;
+}
+
 .alc__panel.is-collapsed {
   display: none;
 }
