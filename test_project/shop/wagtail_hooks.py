@@ -1,20 +1,16 @@
 from wagtail.contrib.modeladmin.options import ModelAdmin, modeladmin_register
-from wagtail.contrib.modeladmin.views import IndexView
-
 from admin_list_controls.selectors import LayoutSelector
-from admin_list_controls.views import ListControlsIndexViewMixin
-from admin_list_controls.components import ListControls, Button, Icon, Text, Panel, Divider, Block, Spacer, \
+from admin_list_controls.views import ListControlsIndexView
+from admin_list_controls.components import Button, Icon, Text, Panel, Divider, Block, Spacer, \
     Columns, Summary
 from admin_list_controls.actions import TogglePanel, CollapsePanel, SubmitForm, Link
 from admin_list_controls.filters import TextFilter, ChoiceFilter, RadioFilter, BooleanFilter
 from .models import Product
 
 
-# TODO: allow modeladmin to control build+apply methods
-
-class ProductAdminIndexView(ListControlsIndexViewMixin, IndexView):
+class IndexView(ListControlsIndexView):
     def build_list_controls(self):
-        return ListControls()(
+        return [
             Button(action=[
                 TogglePanel(ref='panel_1'),
                 CollapsePanel(ref='panel_2'),
@@ -41,17 +37,16 @@ class ProductAdminIndexView(ListControlsIndexViewMixin, IndexView):
             Panel(ref='panel_1', collapsed=True)(
                 Text('Filters', size=Text.LARGE, style={'font-weight': 'bold'}),
                 Spacer(),
-                Columns()([
+                Columns()(
                     TextFilter(
                         name='text_filter',
                         label='A text filter',
                     ),
-                ], [
                     BooleanFilter(
                         name='bool_filter',
                         label='A boolean filter',
                     ),
-                ]),
+                ),
                 Divider(),
                 Text('Another heading', size=Text.LARGE, style={'font-weight': 'bold'}),
                 Spacer(),
@@ -59,7 +54,7 @@ class ProductAdminIndexView(ListControlsIndexViewMixin, IndexView):
                     name='radio_filter',
                     label='A radio filter',
                     choices=(
-                        ('', 'Empty choice'),
+                        ('', 'Any type'),
                         ('apple', 'Apple'),
                         ('banana', 'Banana'),
                         ('pear', 'Pear'),
@@ -68,7 +63,7 @@ class ProductAdminIndexView(ListControlsIndexViewMixin, IndexView):
                     ),
                     default_value='',
                 ),
-                Columns()([
+                Columns()(
                     ChoiceFilter(
                         name='choice_filter',
                         label='A choice filter',
@@ -80,7 +75,6 @@ class ProductAdminIndexView(ListControlsIndexViewMixin, IndexView):
                             ('plum', 'Plum'),
                         ),
                     ),
-                ], [
                     ChoiceFilter(
                         name='multiple_choice_filter',
                         label='A multiple choice filter',
@@ -93,7 +87,7 @@ class ProductAdminIndexView(ListControlsIndexViewMixin, IndexView):
                         ),
                         multiple=True,
                     ),
-                ]),
+                ),
                 Spacer(),
                 Button(action=SubmitForm())('Apply filters'),
             ),
@@ -102,11 +96,11 @@ class ProductAdminIndexView(ListControlsIndexViewMixin, IndexView):
                 Text('large text', size=Text.LARGE),
             ),
             Summary(),
-        )
+        ]
 
 
 @modeladmin_register
 class ProductAdmin(ModelAdmin):
     model = Product
-    index_view_class = ProductAdminIndexView
+    index_view_class = IndexView
     search_fields = ('name',)
