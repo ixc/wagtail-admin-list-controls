@@ -26,13 +26,13 @@ and add `'admin-list-controls'` to `INSTALLED_APPS` in your settings.
 
 ### Basic usage
 
-The following example provides a text input that allows the user to perform textual queries against
-a related model's `name` field.. 
+The following example provides two text inputs that allow the user to perform different queries against
+the `name` fields on two different models. 
 
 ```python
 from wagtail.contrib.modeladmin.options import ModelAdmin, modeladmin_register
 from admin_list_controls.views import ListControlsIndexView
-from admin_list_controls.components import Button, Panel
+from admin_list_controls.components import Button, Panel, Columns
 from admin_list_controls.actions import SubmitForm
 from admin_list_controls.filters import TextFilter
 
@@ -41,10 +41,17 @@ class IndexView(ListControlsIndexView):
         def build_list_controls(self):
             return [
                 Panel()(
-                    TextFilter(
-                        name="text_filter",
-                        label="Creator's name",
-                        apply_to_queryset=lambda queryset, value: queryset.filter(created_by__name__icontains=value)
+                    Columns()(
+                        TextFilter(
+                            name="product_name",
+                            label="Product name",
+                            apply_to_queryset=lambda queryset, value: queryset.filter(name__icontains=value)
+                        ),
+                        TextFilter(
+                            name="creators_name",
+                            label="Creator's name",
+                            apply_to_queryset=lambda queryset, value: queryset.filter(created_by__name__icontains=value)
+                        ),
                     ),
                     Button(action=SubmitForm())(
                         "Apply filters",
