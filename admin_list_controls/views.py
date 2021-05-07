@@ -1,8 +1,9 @@
-import os
 import json
+import os
 from collections import Iterable
 
 from django.conf import settings
+from django.core.serializers.json import DjangoJSONEncoder
 from django.utils.safestring import mark_safe
 from wagtail.contrib.modeladmin.views import IndexView
 from .components import ListControls
@@ -84,7 +85,7 @@ class ListControlsIndexViewMixin:
             # Consumed by the front-end code to build the UI
             'initial_state': json.dumps({
                 'admin_list_controls': self.get_list_controls().serialize(),
-            }),
+            }, cls=DjangoJSONEncoder),
             'selected_layout_template': selected_layout_template,
             'widget_js': self.get_list_controls_widget_js(),
         }

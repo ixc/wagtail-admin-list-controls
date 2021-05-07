@@ -1,10 +1,11 @@
-from wagtail.contrib.modeladmin.options import ModelAdmin, modeladmin_register
 from admin_list_controls.selectors import LayoutSelector
 from admin_list_controls.views import ListControlsIndexView
 from admin_list_controls.components import Button, Icon, Text, Panel, Divider, Block, Spacer, \
     Columns, Summary
 from admin_list_controls.actions import TogglePanel, CollapsePanel, SubmitForm, Link
-from admin_list_controls.filters import TextFilter, ChoiceFilter, RadioFilter, BooleanFilter
+from admin_list_controls.filters import TextFilter, ChoiceFilter, RadioFilter, BooleanFilter, DateFilter
+from wagtail.admin.staticfiles import versioned_static
+from wagtail.contrib.modeladmin.options import ModelAdmin, modeladmin_register
 from .models import Product
 
 
@@ -94,6 +95,13 @@ class IndexView(ListControlsIndexView):
             Panel(ref='panel_2', collapsed=True)(
                 Text('medium text ', size=Text.MEDIUM),
                 Text('large text', size=Text.LARGE),
+                DateFilter(
+                    name='date_start',
+                    label='Date',
+                    format='%d/%m/%Y',
+                ),
+                Spacer(),
+                Button(action=SubmitForm())('Apply filters'),
             ),
             Summary(),
         ]
@@ -104,3 +112,6 @@ class ProductAdmin(ModelAdmin):
     model = Product
     index_view_class = IndexView
     search_fields = ('name',)
+
+    index_view_extra_js = [versioned_static(
+        'wagtailadmin/js/date-time-chooser.js')]

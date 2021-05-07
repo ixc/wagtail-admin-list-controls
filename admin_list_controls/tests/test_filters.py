@@ -1,7 +1,8 @@
+from datetime import date
 from django.test import RequestFactory
 from django_webtest import WebTest
 from admin_list_controls.filters import BaseFilter, TextFilter, BooleanFilter, ChoiceFilter, \
-    RadioFilter
+    RadioFilter, DateFilter
 from admin_list_controls.tests.utils import BaseTestCase
 
 
@@ -53,6 +54,18 @@ class TestFilters(BaseTestCase, WebTest):
         self.assertEqual(filter_.cleaned_value, '')
         filter_.handle_request(self.factory.get('/?test_name=test_value'))
         self.assertEqual(filter_.cleaned_value, 'test_value')
+
+    def test_date_filter_value(self):
+        filter_ = DateFilter(
+            name='test_name',
+            label='test_label',
+        )
+        filter_.handle_request(self.factory.get('/'))
+        self.assertEqual(filter_.cleaned_value, None)
+        filter_.handle_request(self.factory.get('/?test_name='))
+        self.assertEqual(filter_.cleaned_value, None)
+        filter_.handle_request(self.factory.get('/?test_name=2021-01-01'))
+        self.assertEqual(filter_.cleaned_value, date(2021, 1, 1))
 
     def test_boolean_filter_value(self):
         filter_ = BooleanFilter(

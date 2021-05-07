@@ -9,6 +9,7 @@ import {Divider} from "./divider";
 import {Block} from "./block";
 import {Selector} from "./selector";
 import {TextFilter} from "./filters/text";
+import {DateFilter} from "./filters/date";
 import {BooleanFilter} from "./filters/boolean";
 import {RadioFilter} from "./filters/radio";
 import {ChoiceFilter} from "./filters/choice";
@@ -56,6 +57,8 @@ export function render_control(control) {
                     return <RadioFilter key={control.component_id} control={control} />;
                 case 'choice':
                     return <ChoiceFilter key={control.component_id} control={control} />;
+                case 'date':
+                    return <DateFilter key={control.component_id} control={control} />;
                 default:
                     console.error('Unknown filter type', control.filter_type, control);
                     throw new Error(`Unknown filter type "${control.filter_type}`);
