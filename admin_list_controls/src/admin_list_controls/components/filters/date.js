@@ -19,15 +19,28 @@ export function DateFilter({control}) {
     }
 
     useEffect(() => {
-            window.initDateChooser(input_id, {
-                "dayOfWeekStart": 1, "format": control.format,
-                onChangeDateTime(_, $el) {
-                    let el = $el.get(0);
-                    el.dispatchEvent(new Event('change'));
-                    inputChange({'target': el});
+        let start = null;
+        window.initDateChooser(input_id, {
+            "dayOfWeekStart": 1, "format": control.format,
+            onGenerate: function(current, input) {
+                start = start || current;
+                let picker = this[0];
+                if (start && !dateEqual(start, current)) {
+                    picker.querySelectorAll(
+                        '.xdsoft_datepicker .xdsoft_current:not(.xdsoft_today)'
+                    ).forEach(
+                        i => i.classList.remove("xdsoft_current")
+                    );
                 }
-            });
-        }, [input_id] // avoid init on every render
+            },
+            onChangeDateTime(current, $el) {
+                start = current;
+                let el = $el.get(0);
+                el.dispatchEvent(new Event('change'));
+                inputChange({'target': el});
+            }
+        });
+    }, [input_id] // avoid init on every render
     );
 
     return (
