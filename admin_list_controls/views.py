@@ -1,9 +1,12 @@
-import os
 import json
+import os
 from collections import Iterable
 
+from django import forms
 from django.conf import settings
+from django.core.serializers.json import DjangoJSONEncoder
 from django.utils.safestring import mark_safe
+from wagtail.admin.staticfiles import versioned_static
 from wagtail.contrib.modeladmin.views import IndexView
 from .components import ListControls
 from .selectors import LayoutSelector
@@ -84,7 +87,7 @@ class ListControlsIndexViewMixin:
             # Consumed by the front-end code to build the UI
             'initial_state': json.dumps({
                 'admin_list_controls': self.get_list_controls().serialize(),
-            }),
+            }, cls=DjangoJSONEncoder),
             'selected_layout_template': selected_layout_template,
             'widget_js': self.get_list_controls_widget_js(),
         }
@@ -158,6 +161,17 @@ class ListControlsIndexViewMixin:
             if hasattr(obj, 'derive_from_components'):
                 obj.derive_from_components(flattened_tree)
 
+    @property
+    def media(self):
+        js = self.model_admin.get_index_view_extra_js()
+        # @TODO only inject datechooser when needed
+        js += [versioned_static(
+            'wagtailadmin/js/date-time-chooser.js')]
+
+        return forms.Media(
+            css={'all': self.model_admin.get_index_view_extra_css()},
+            js=js
+        )
 
 class ListControlsIndexView(ListControlsIndexViewMixin, IndexView):
     pass

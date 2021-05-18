@@ -296,6 +296,21 @@ TextFilter(
 )
 ```
 
+#### DateFilter
+
+A datepicker using Wagtail's default picker.
+
+```python
+from admin_list_controls.filters import DateFilter
+
+DateFilter(
+    name='date',
+    label='Date',
+    format='%d/%m/%Y',
+    apply_to_queryset=lambda queryset, value: queryset.filter(date__gte=value),
+)
+```
+
 #### BooleanFilter
 
 A checkbox input.

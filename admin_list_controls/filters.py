@@ -1,3 +1,8 @@
+import datetime
+from django.conf import settings
+from django.core import validators
+from django.utils import datetime_safe, formats
+from wagtail.admin.datetimepicker import to_datetimepicker_format
 from .components import BaseComponent
 from .actions import RemoveValue, SubmitForm
 
@@ -91,6 +96,54 @@ class BooleanFilter(BaseFilter):
     def clean(self, *args, **kwargs):
         value = super().clean(*args, **kwargs)
         return bool(value)
+
+
+class DateFilter(BaseFilter):
+    format_key = 'DATE_INPUT_FORMATS'
+    filter_type = 'date'
+    empty_values = list(validators.EMPTY_VALUES)
+
+    def __init__(self, format=None, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        self.format = format or getattr(settings, 'WAGTAIL_DATE_FORMAT', None)
+        fallback_format = formats.get_format(self.format_key)[0]
+        self.format = fallback_format if self.format is None else self.format
+        self.js_format = to_datetimepicker_format(self.format)
+
+    def format_value(self, value):
+        return formats.localize_input(value, self.format)
+
+    def to_python(self, value):
+        """
+        Validate that the input can be converted to a date. Return a Python
+        datetime.date object.
+        """
+        if value in self.empty_values:
+            return None
+
+        value = value.strip()
+        # Try to strptime against each input format.
+        try:
+            return datetime.datetime.strptime(value, self.format).date()
+        except (ValueError, TypeError):
+            return None
+
+    def clean(self, *args, **kwargs):
+        value = super().clean(*args, **kwargs)
+        return self.to_python(value) if value else None
+
+    def get_summary_display_value_for_value(self, value):
+        """
+        Returns the corresponding display value for the raw value
+        """
+        return self.format_value(value)
+
+    def serialize(self):
+        return dict(super().serialize(), **{
+            'value': self.format_value(self.cleaned_value),
+            'format': self.js_format,
+        })
 
 
 class BaseChoiceFilter(BaseFilter):
