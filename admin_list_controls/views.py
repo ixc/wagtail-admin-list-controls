@@ -1,6 +1,6 @@
 import os
 import json
-from collections import Iterable
+from collections.abc import Iterable
 
 from django.conf import settings
 from django.utils.safestring import mark_safe
