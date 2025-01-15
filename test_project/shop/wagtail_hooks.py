@@ -1,4 +1,3 @@
-from wagtail.contrib.modeladmin.options import ModelAdmin, modeladmin_register
 from admin_list_controls.selectors import LayoutSelector
 from admin_list_controls.views import ListControlsIndexView
 from admin_list_controls.components import Button, Icon, Text, Panel, Divider, Block, Spacer, \
@@ -6,6 +5,12 @@ from admin_list_controls.components import Button, Icon, Text, Panel, Divider, B
 from admin_list_controls.actions import TogglePanel, CollapsePanel, SubmitForm, Link
 from admin_list_controls.filters import TextFilter, ChoiceFilter, RadioFilter, BooleanFilter
 from .models import Product
+
+try:
+    from wagtail.contrib.modeladmin.options import ModelAdmin, modeladmin_register
+except ImportError:
+    # Re/ deprecation in wagtail 5.2 & removal in wagtail 6
+    from wagtail_modeladmin.options import ModelAdmin, modeladmin_register
 
 
 class IndexView(ListControlsIndexView):

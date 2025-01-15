@@ -29,10 +29,14 @@ and add `'admin_list_controls'` to `INSTALLED_APPS` in your settings.
 ## Basic usage
 
 The following example provides two text inputs that allow the user to perform different queries against
-the `name` fields on two different models. 
+the `name` fields on two different models.
 
 ```python
+# For below Wagtail 6
 from wagtail.contrib.modeladmin.options import ModelAdmin, modeladmin_register
+# For Wagtail 6 and above
+from wagtail_modeladmin.options import ModelAdmin, modeladmin_register
+
 from admin_list_controls.views import ListControlsIndexView
 from admin_list_controls.components import Button, Panel, Columns
 from admin_list_controls.actions import SubmitForm
@@ -82,7 +86,7 @@ To use this lib, you'll want to override the index view on your `ModelAdmin` ins
 it's recommended to subclass `admin_list_controls.views.ListControlsIndexView`. If you already have
 a custom index view defined, you can use `admin_list_controls.views.ListControlsIndexViewMixin`.
 
-To define the controls used for the UI, define the `build_list_controls` method on your index view and 
+To define the controls used for the UI, define the `build_list_controls` method on your index view and
 return them in a list.
 
 If you want to effect the queryset based on multiple controls, you can use the `apply_list_controls_to_queryset`
@@ -91,7 +95,7 @@ method.
 
 ### Components
 
-Components are the basic building blocks of the UI. They are invoked with options, and a second call is used 
+Components are the basic building blocks of the UI. They are invoked with options, and a second call is used
 to define their children. For example:
 
 ```python
@@ -101,8 +105,8 @@ from admin_list_controls.components import Block, Icon, Text, Button
 Block(style={'color': 'blue'})(
     'This is some blue text before a button',
     Button()(
-        Icon('icon icon-plus'), 
-        'Click me!',    
+        Icon('icon icon-plus'),
+        'Click me!',
     ),
     Text('This is some pink text after a button', style={'color': 'pink'}),
 )
@@ -110,7 +114,7 @@ Block(style={'color': 'blue'})(
 
 All components share some options:
  - `extra_classes`: a string of classnames to add to the component. For example, `'some_class and_another_class'`.
- - `style`: a dictionary of inline styles that are applied to the component. For example, `{'color': 'red'}`.  
+ - `style`: a dictionary of inline styles that are applied to the component. For example, `{'color': 'red'}`.
 
 #### Block
 
@@ -144,7 +148,7 @@ Spacer()(
 #### Columns
 
 Column components divide their child components into two equally-spaced columns. You can use the `column_count`
-argument to define how many columns are used. 
+argument to define how many columns are used.
 
 ```python
 # Render a block element that uses HTML float styling.
@@ -180,7 +184,7 @@ that involve a textual component.
 
 They can be collapsed or expanded by default, by defining the `collapsed` argument.
 
-You can dynamically control the collapsed/expanded state of a panel by using the   
+You can dynamically control the collapsed/expanded state of a panel by using the
 
 ```python
 from admin_list_controls.components import Panel
@@ -205,8 +209,8 @@ Button(action=TogglePanel(ref='foo'))(
 
 #### Icon
 
-Icon components are used to insert icons, usually from wagtail's built-in icons are from a library such as 
-`wagtailfontawesome`. They are invoked with a classname argument. 
+Icon components are used to insert icons, usually from wagtail's built-in icons are from a library such as
+`wagtailfontawesome`. They are invoked with a classname argument.
 
 ```python
 from admin_list_controls.components import Icon
@@ -220,7 +224,7 @@ Text components are used to wrap inline text. You can invoke a `Text` component 
 you can define it as a string within another component.
 
 Text can have a `size` argument defined, it defaults to `Text.MEDIUM`. There is also a `Text.LARGE` constant
-to display text in a size fit for a heading. 
+to display text in a size fit for a heading.
 
 ```python
 from admin_list_controls.components import Block, Text
@@ -260,8 +264,8 @@ Button(action=Link('https://google.com'))(
 #### Summary
 
 Summary components are used to summarise the data selected in different filters and selectors.
-It renders multiple buttons that can be used to reset specific values or the entire set of form 
-  
+It renders multiple buttons that can be used to reset specific values or the entire set of form
+
 ```python
 from admin_list_controls.components import Summary
 
@@ -271,21 +275,21 @@ Summary()
 
 ### Filters
 
-Filters are a mixture of Django's widgets and form fields. They allow you to define a form widget and 
+Filters are a mixture of Django's widgets and form fields. They allow you to define a form widget and
 then apply the submitted values against the list view's queryset.
 
 All components share some options:
  - `name`: a string representing the name of the GET param used by the filter.
  - `label`: a string representing the label of the filter.
  - `apply_to_queryset`: a function that accepts a two arguments, a queryset and the filter's selected value. If a filter
-   has a value, this method will be called. If no value has been submitted and no default has been defined, the function 
+   has a value, this method will be called. If no value has been submitted and no default has been defined, the function
    will not be called.
  - `default_value`: a default value to use if no value has been submitted.
 
 #### TextFilter
 
-A textual input, comparable to an `<input type="text">`. 
-  
+A textual input, comparable to an `<input type="text">`.
+
 ```python
 from admin_list_controls.filters import TextFilter
 
@@ -301,7 +305,7 @@ TextFilter(
 A checkbox input.
 
 Note that `apply_to_queryset` is only called if a truthy value has been submitted.
-  
+
 ```python
 from admin_list_controls.filters import BooleanFilter
 
@@ -338,7 +342,7 @@ RadioFilter(
 
 A dropdown choice selector. ChoiceFilters can have their values cleared.
 
-The optional argument `multiple` indicates if the widget should allow multiple values. 
+The optional argument `multiple` indicates if the widget should allow multiple values.
 
 ```python
 from admin_list_controls.filters import ChoiceFilter
@@ -372,10 +376,10 @@ ChoiceFilter(
 ### Selectors
 
 Selectors are buttons that are used to toggle form values and then effect the view. A selector will
-apply its effects if its `value` is passed in the GET params. 
+apply its effects if its `value` is passed in the GET params.
 
 Selectors accept a boolean value for the `is_default` param. Those with a truthy value will be
-selected without any submitted data. 
+selected without any submitted data.
 
 
 #### SortSelector
@@ -388,7 +392,7 @@ from admin_list_controls.selectors import SortSelector
 
 # The default sorting method, will be applied if none are selected
 SortSelector(
-    value='name_sort_asc', 
+    value='name_sort_asc',
     is_default=True,
     apply_to_queryset=lambda queryset: queryset.order_by('name')
 )(
@@ -396,7 +400,7 @@ SortSelector(
 )
 
 SortSelector(
-    value='name_sort_desc', 
+    value='name_sort_desc',
     apply_to_queryset=lambda queryset: queryset.order_by('-name')
 )(
     'Sort by name Z-A'
@@ -421,7 +425,7 @@ LayoutSelector(
 )
 
 LayoutSelector(
-    value='grid_view', 
+    value='grid_view',
     template='path/to/template.html'
 )(
     'Grid view'
@@ -538,17 +542,17 @@ SubmitForm()
 
 ## Rationale and goals
 
-This library emerged from a large build that required an admin list view with an exhaustive set of filters and the 
-ability for users to change the ordering of the results. The filters would need to perform exact and substring matching 
-against textual fields, as well as exact matches on boolean and choice fields. Some of the sorts applied to order the 
-results also relied on complicated querying and conditional behaviours. In some extreme conditions, certain 
+This library emerged from a large build that required an admin list view with an exhaustive set of filters and the
+ability for users to change the ordering of the results. The filters would need to perform exact and substring matching
+against textual fields, as well as exact matches on boolean and choice fields. Some of the sorts applied to order the
+results also relied on complicated querying and conditional behaviours. In some extreme conditions, certain
 combinations of filters and sorts would require distinct code paths.
 
-We initially attempted to use Wagtail's built-in searching and filtering features, but they were found to be too 
-limiting for our use-cases and resulted in a non-optimal experience for users. Third-party libraries were 
+We initially attempted to use Wagtail's built-in searching and filtering features, but they were found to be too
+limiting for our use-cases and resulted in a non-optimal experience for users. Third-party libraries were
 investigated, but the ecosystem doesn't have much covering the space.
 
-Somewhat reluctantly, this library was built to cover our needs. Now that the dust has settled and the code has 
+Somewhat reluctantly, this library was built to cover our needs. Now that the dust has settled and the code has
 stabilised, we're finding increasing numbers of use-cases for it.
 
 
